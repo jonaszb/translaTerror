@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @layer base {
+  body {
+    @apply bg-gray-900 text-white;
+  }
+} */
+
+body {
+    overflow: hidden;
+}
