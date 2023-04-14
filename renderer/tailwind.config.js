@@ -10,6 +10,9 @@ module.exports = {
     extend: {
       width: {
         86: '21.5rem',
+      },
+      gradientColorStopPositions: {
+        150: '150%',
       }
     },
   },
