@@ -12,6 +12,7 @@
         "postinstall": "electron-builder install-app-deps"
     },
     "dependencies": {
+        "@headlessui/react": "^1.7.14",
         "electron-serve": "^1.1.0",
         "electron-store": "^8.1.0",
         "eslint-config-next": "^13.2.4",

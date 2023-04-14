@@ -44,16 +44,16 @@ async function handleFileOpen(browserWindow: Electron.BrowserWindow) {
 
 const translateTable = async (jobData) => {
     const { path, toLang, fromLang } = jobData;
-    // console.log('translateTable', path, toLang, fromLang);
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
-    // return true;
-    const formData = new FormData();
-    const fileData = fs.readFileSync(path);
-    const fileName = path.split(/[\\\/]/).pop();
-    formData.append('file', fileData, fileName);
-    formData.append('target_language', toLang);
-    fromLang === 'auto' || formData.append('source_language', fromLang);
-    return await request(formData);
+    console.log('translateTable', path, toLang, fromLang);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    return true;
+    // const formData = new FormData();
+    // const fileData = fs.readFileSync(path);
+    // const fileName = path.split(/[\\\/]/).pop();
+    // formData.append('file', fileData, fileName);
+    // formData.append('target_language', toLang);
+    // fromLang === 'auto' || formData.append('source_language', fromLang);
+    // return await request(formData);
 };
 
 (async () => {
