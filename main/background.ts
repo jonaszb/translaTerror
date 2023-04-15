@@ -1,10 +1,11 @@
-import { app, dialog, ipcMain } from 'electron';
+import { app, dialog, ipcMain, BrowserWindow } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
 import { GoogleAuth } from 'google-auth-library';
 import fs from 'fs';
 import FormData from 'form-data';
 import serviceKey from './key.json';
+import { download } from 'electron-dl';
 
 const translafeFnUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-translate';
 const translateTargetAudience = translafeFnUrl;
@@ -44,16 +45,16 @@ async function handleFileOpen(browserWindow: Electron.BrowserWindow) {
 
 const translateTable = async (jobData) => {
     const { path, toLang, fromLang } = jobData;
-    console.log('translateTable', path, toLang, fromLang);
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    return true;
-    // const formData = new FormData();
-    // const fileData = fs.readFileSync(path);
-    // const fileName = path.split(/[\\\/]/).pop();
-    // formData.append('file', fileData, fileName);
-    // formData.append('target_language', toLang);
-    // fromLang === 'auto' || formData.append('source_language', fromLang);
-    // return await request(formData);
+    // console.log('translateTable', path, toLang, fromLang);
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    // return true;
+    const formData = new FormData();
+    const fileData = fs.readFileSync(path);
+    const fileName = path.split(/[\\\/]/).pop();
+    formData.append('file', fileData, fileName);
+    formData.append('target_language', toLang);
+    fromLang === 'auto' || formData.append('source_language', fromLang);
+    return await request(formData);
 };
 
 (async () => {
@@ -76,6 +77,18 @@ const translateTable = async (jobData) => {
             event.sender.send('translateSingleDoc', result);
         });
     });
+
+    ipcMain.on('openDownloadLink', async (event, { downloadLink, selectedFile }) => {
+        const win = BrowserWindow.getFocusedWindow();
+        console.log(
+            await download(win, downloadLink, {
+                saveAs: true,
+                directory: selectedFile.path.replace(selectedFile.name, ''),
+                filename: `${selectedFile.name}_TAB.${selectedFile.extension}`,
+            })
+        );
+    });
+
     mainWindow.setBackgroundColor('#27272A');
     if (isProd) {
         await mainWindow.loadURL('app://./home.html');

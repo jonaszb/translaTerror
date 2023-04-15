@@ -22,7 +22,7 @@ const pathToFileItem = (path: string): FileItem => {
 };
 
 function Home() {
-    const { files, selectedFile, setFiles, setIsProcessing, setDownloadLink } = useMenuContext();
+    const { files, selectedFile, setFiles, setIsProcessing, setDownloadLink, downloadLink } = useMenuContext();
 
     const addFiles = (paths?: string[]) => {
         if (!paths) return;
@@ -43,11 +43,22 @@ function Home() {
             });
             ipcRenderer.on('translateSingleDoc', (event, data) => {
                 setIsProcessing(false);
-                setDownloadLink(data);
-                console.log(data);
+                try {
+                    new URL(data);
+                    setDownloadLink(data);
+                } catch (e) {
+                    console.log('Received invalid URL from main process: ' + data);
+                    console.error(e);
+                }
             });
         }
     }, []);
+
+    React.useEffect(() => {
+        if (downloadLink && ipcRenderer) {
+            ipcRenderer.send('openDownloadLink', { downloadLink, selectedFile });
+        }
+    }, [downloadLink]);
 
     return (
         <>

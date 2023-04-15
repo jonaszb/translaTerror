@@ -13,12 +13,12 @@
     },
     "dependencies": {
         "@headlessui/react": "^1.7.14",
+        "electron-dl": "^3.5.0",
         "electron-serve": "^1.1.0",
         "electron-store": "^8.1.0",
         "eslint-config-next": "^13.2.4",
         "form-data": "^4.0.0",
         "google-auth-library": "^8.7.0",
-        "react-select": "^5.7.2",
         "react-tooltip": "^5.10.4"
     },
     "devDependencies": {

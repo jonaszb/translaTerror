@@ -1,7 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { useMenuContext } from '../store/MenuContext';
 import { ActionButton } from './Buttons';
-import { DownloadIcon } from './icons';
 import { LanguageSelect } from './LanguageSelect';
 
 export const DocxTranslatePanel = () => {
@@ -9,19 +8,24 @@ export const DocxTranslatePanel = () => {
         useMenuContext();
 
     const initiateTranslation = () => {
+        if (isProcessing) return;
         if (!ipcRenderer || !selectedFile || selectedFile.extension !== 'docx') return;
-        const jobData = {
-            fromLang,
-            toLang,
-            path: selectedFile.path,
-        };
-        setIsProcessing(true);
-        ipcRenderer.send('translateSingleDoc', jobData);
+        if (downloadLink) {
+            ipcRenderer.send('openDownloadLink', { downloadLink, selectedFile });
+        } else {
+            const jobData = {
+                fromLang,
+                toLang,
+                path: selectedFile.path,
+            };
+            setIsProcessing(true);
+            ipcRenderer.send('translateSingleDoc', jobData);
+        }
     };
 
     return (
         <section className="flex h-full w-full flex-col items-center pt-24">
-            <h1 className="mb-24 block text-center text-3xl font-bold tracking-wide text-amber-50">
+            <h1 className="mb-14 block text-center text-3xl font-bold tracking-wide text-amber-50">
                 {selectedFile.name.split('.')[0]}
             </h1>
             <div className="w-56">

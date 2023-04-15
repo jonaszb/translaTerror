@@ -5,7 +5,7 @@
 
 .svg-animate {
     stroke-dasharray: 50 !important;
-    stroke-dashoffset: 50;
+    stroke-dashoffset: 25;
     animation: dash 1s linear forwards;
 }
 

@@ -33,9 +33,9 @@ const transitionProperties = {
     enter: 'transition-all ease-in-out duration-1000',
     enterFrom: 'opacity-0 -translate-y-12',
     enterTo: 'opacity-100',
-    leave: 'transition-all ease-in-out duration-1000',
+    leave: 'transition-all ease-in duration-500',
     leaveFrom: 'opacity-100',
-    leaveTo: 'opacity-0 translate-y-4',
+    leaveTo: 'opacity-0 translate-y-8',
     className: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
 };
 
