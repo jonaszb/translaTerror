@@ -26,7 +26,7 @@ const FileListItem: FC<{ file: FileItem; selected?: boolean; clickHandler: (file
             >
                 {file.name.split('.')[0]}
             </span>
-            <Tooltip id={`${file.name}-tooltip`} place="right" />
+            <Tooltip className="z-50" id={`${file.name}-tooltip`} place="right" />
         </li>
     );
 };

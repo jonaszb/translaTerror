@@ -26,20 +26,20 @@ export const DocxTranslatePanel = () => {
     return (
         <section className="flex h-full w-full flex-col items-center pt-24">
             <h1 className="mb-14 block text-center text-3xl font-bold tracking-wide text-amber-50">
-                {selectedFile.name.split('.')[0]}
+                {selectedFile.name}
             </h1>
             <div className="w-56">
                 <div className="flex justify-between">
                     <LanguageSelect
                         label="Source"
                         value={fromLang}
-                        options={['auto', 'no', 'dk', 'pl', 'en']}
+                        options={['auto', 'no', 'dk', 'sv', 'pl', 'en']}
                         onChange={(value) => setFromLang(value)}
                     />
                     <LanguageSelect
                         label="Target"
                         value={toLang}
-                        options={['no', 'dk', 'pl', 'en']}
+                        options={['no', 'dk', 'sv', 'pl', 'en']}
                         onChange={(value) => setToLang(value)}
                     />
                 </div>
