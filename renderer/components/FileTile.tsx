@@ -62,7 +62,7 @@ const FileTile: FC = () => {
                     data-tooltip-id={file.name}
                     data-tooltip-content={file.name}
                     data-tooltip-delay-show={1000}
-                    className="block max-h-[3.5rem] w-full overflow-hidden text-center text-lg font-bold tracking-wide text-amber-50"
+                    className="block max-h-[3.5rem] w-full overflow-hidden break-all text-center text-lg font-bold tracking-wide text-amber-50"
                 >
                     {file.name}
                 </span>

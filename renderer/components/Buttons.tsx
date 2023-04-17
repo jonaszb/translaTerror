@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, SVGProps } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { Transition } from '@headlessui/react';
-import { DownloadIcon, Spinner } from './icons';
+import { DownloadIcon, PlayIcon, Spinner } from './icons';
 
 export const RoundButton: FC<
     PropsWithChildren<
@@ -34,11 +34,11 @@ export const RoundButton: FC<
 
 const transitionProperties = {
     enter: 'transition-all ease-in-out duration-1000',
-    enterFrom: 'opacity-0 -translate-y-12',
+    enterFrom: 'opacity-0 -translate-x-20',
     enterTo: 'opacity-100',
     leave: 'transition-all ease-in duration-500',
     leaveFrom: 'opacity-100',
-    leaveTo: 'opacity-0 translate-y-8',
+    leaveTo: 'opacity-0 translate-x-8',
     className: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
 };
 
@@ -61,7 +61,7 @@ export const ActionButton: FC<
             {...btnProps}
         >
             <Transition show={!isProcessing && !downloadLink} {...transitionProperties}>
-                <span>{btnText}</span>
+                <PlayIcon className="h-12 w-12" />
             </Transition>
             <Transition show={isProcessing} {...transitionProperties}>
                 <Spinner />
