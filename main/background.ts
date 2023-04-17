@@ -6,6 +6,7 @@ import fs from 'fs';
 import FormData from 'form-data';
 import serviceKey from './key.json';
 import { download } from 'electron-dl';
+import type { FileItem } from '../renderer/types';
 
 const translafeFnUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-translate';
 const translateTargetAudience = translafeFnUrl;
@@ -45,9 +46,6 @@ async function handleFileOpen(browserWindow: Electron.BrowserWindow) {
 
 const translateTable = async (jobData) => {
     const { path, toLang, fromLang } = jobData;
-    // console.log('translateTable', path, toLang, fromLang);
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
-    // return true;
     const formData = new FormData();
     const fileData = fs.readFileSync(path);
     const fileName = path.split(/[\\\/]/).pop();
@@ -62,8 +60,8 @@ const translateTable = async (jobData) => {
     const mainWindow = createWindow('main', {
         width: 1000,
         height: 600,
-        minHeight: 600,
-        minWidth: 1000,
+        minHeight: 540,
+        minWidth: 460,
     });
 
     ipcMain.on('addFiles', (event, arg) => {
@@ -72,24 +70,30 @@ const translateTable = async (jobData) => {
         });
     });
 
-    ipcMain.on('translateSingleDoc', (event, arg) => {
-        translateTable(arg).then((result) => {
-            event.sender.send('translateSingleDoc', result);
-        });
+    ipcMain.on('translateSingleDoc', async (event, arg) => {
+        const win = BrowserWindow.getFocusedWindow();
+        const downloadLink = await translateTable(arg);
+        if (typeof downloadLink === 'string') {
+            await download(win, downloadLink, {
+                directory: arg.path.replace(`${arg.name}.${arg.extension}`, ''),
+                filename: `${arg.name}_TAB.${arg.extension}`,
+            });
+        }
+        event.sender.send('translateSingleDoc', { downloadLink, path: arg.path });
     });
 
-    ipcMain.on('openDownloadLink', async (event, { downloadLink, selectedFile }) => {
+    ipcMain.on('openDownloadLink', async (event, { downloadLink, file }: { downloadLink: any; file: FileItem }) => {
         const win = BrowserWindow.getFocusedWindow();
         console.log(
             await download(win, downloadLink, {
                 saveAs: true,
-                directory: selectedFile.path.replace(selectedFile.name, ''),
-                filename: `${selectedFile.name}_TAB.${selectedFile.extension}`,
+                directory: file.path.replace(`${file.name}.${file.extension}`, ''),
+                filename: `${file.name}_TAB.${file.extension}`,
             })
         );
     });
 
-    mainWindow.setBackgroundColor('#27272A');
+    mainWindow.setBackgroundColor('#18181b');
     if (isProd) {
         await mainWindow.loadURL('app://./home.html');
     } else {

@@ -1,16 +1,22 @@
 import { Transition } from '@headlessui/react';
 import { FC } from 'react';
 
-export const Checkbox: FC<{ id: string; checked?: boolean }> = (props) => {
+export const Checkbox: FC<{ id: string; checked: boolean; onChange: () => void }> = (props) => {
     return (
         <>
-            <input id={props.id} type="checkbox" className="peer hidden" checked={props.checked} onChange={() => {}} />
+            <input
+                id={props.id}
+                type="checkbox"
+                className="peer hidden"
+                checked={!!props.checked}
+                onChange={props.onChange}
+            />
             <label
                 htmlFor={props.id}
-                className={`pointer-events-none flex h-6 w-6 items-center justify-center rounded-full border-amber-200 bg-zinc-800 peer-checked:border`}
+                className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-amber-200 bg-zinc-900 peer-checked:border`}
             >
                 <Transition
-                    show={props.checked}
+                    show={!!props.checked}
                     enter="transition-all ease-in-out"
                     enterFrom="scale-0"
                     enterTo="scale-100"

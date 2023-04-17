@@ -9,10 +9,11 @@ export const RoundButton: FC<
             tooltipId?: string;
             tooltip?: string;
             Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+            danger?: boolean;
         }
     >
 > = (props) => {
-    const { Icon, tooltip, tooltipId, ...btnProps } = props;
+    const { Icon, tooltip, tooltipId, danger, ...btnProps } = props;
     return (
         <li>
             <button
@@ -20,7 +21,9 @@ export const RoundButton: FC<
                 data-tooltip-id={tooltipId}
                 data-tooltip-content={tooltip}
                 data-tooltip-delay-show={1000}
-                className="group flex aspect-square h-16 w-16 items-center justify-center rounded-full border-2 border-amber-200 transition-all hover:bg-amber-200 disabled:pointer-events-none disabled:border-zinc-400"
+                className={`group flex aspect-square h-12 w-12 items-center justify-center rounded-full border-2 border-amber-200 transition-all disabled:pointer-events-none disabled:border-zinc-400 ${
+                    danger ? 'hover:border-red-400 hover:bg-red-400' : 'hover:border-amber-200 hover:bg-amber-200'
+                }`}
             >
                 <Icon className="fill-amber-200 stroke-amber-200 group-hover:scale-125 group-hover:fill-slate-600 group-hover:stroke-slate-600 group-disabled:fill-zinc-400 group-disabled:stroke-zinc-400" />
             </button>
@@ -45,7 +48,7 @@ export const ActionButton: FC<
     const { children, className, isProcessing, downloadLink, onClick, btnText, ...btnProps } = props;
     return (
         <button
-            className={`relative h-16 w-full overflow-hidden rounded-full border border-amber-200 py-4 text-2xl font-semibold uppercase tracking-widest  transition-all ${
+            className={`relative h-16 w-full overflow-hidden rounded-full border border-amber-200 py-4 text-2xl font-semibold uppercase tracking-widest transition-all disabled:pointer-events-none disabled:opacity-50 ${
                 className ?? ''
             } ${
                 isProcessing

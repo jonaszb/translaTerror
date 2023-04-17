@@ -4,8 +4,8 @@ import electron from 'electron';
 import { Sidebar } from '../components/Sidebar';
 import { FileItem } from '../types';
 import { NoFilesScreen } from '../components/NoFilesScreen';
-import { DocxTranslatePanel } from '../components/DocxTranslatePanel';
 import { useMenuContext } from '../store/MenuContext';
+import FileGroup from '../components/FileGroup';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
@@ -24,7 +24,7 @@ const pathToFileItem = (path: string): FileItem => {
 };
 
 function Home() {
-    const { files, selectedFile, setFiles, setIsProcessing, setDownloadLink, downloadLink } = useMenuContext();
+    const { files, setFiles, filesByExtension } = useMenuContext();
 
     const addFiles = (paths?: string[]) => {
         if (!paths) return;
@@ -56,25 +56,8 @@ function Home() {
             ipcRenderer.on('addFiles', (event, data: string[]) => {
                 addFiles(data);
             });
-            ipcRenderer.on('translateSingleDoc', (event, data) => {
-                setIsProcessing(false);
-                try {
-                    new URL(data);
-                    setDownloadLink(data);
-                } catch (e) {
-                    console.log('Received invalid URL from main process: ' + data);
-                    console.error(e);
-                }
-            });
         }
     }, []);
-
-    React.useEffect(() => {
-        if (downloadLink && ipcRenderer) {
-            ipcRenderer.send('openDownloadLink', { downloadLink, selectedFile });
-        }
-    }, [downloadLink]);
-
     return (
         <>
             <Head>
@@ -82,9 +65,15 @@ function Home() {
             </Head>
             <main className="col grid h-screen w-screen grid-cols-[min-content_1fr] font-roboto">
                 <Sidebar />
-                <div className="col-start-2 h-full w-full">
-                    {files && selectedFile && <DocxTranslatePanel />}
-                    {!files && <NoFilesScreen />}
+                <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll py-8 px-10">
+                    {files.length > 0 && filesByExtension.docx && (
+                        <FileGroup extension="docx" files={filesByExtension.docx} />
+                    )}
+                    {files.length > 0 && filesByExtension.mxliff && (
+                        <FileGroup extension="mxliff" files={filesByExtension.mxliff} />
+                    )}
+
+                    {files.length === 0 && <NoFilesScreen />}
                 </div>
             </main>
         </>

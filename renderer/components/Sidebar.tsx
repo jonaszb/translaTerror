@@ -1,87 +1,34 @@
 import { RoundButton } from './Buttons';
-import { ClearIcon, DocumentIcon, DocumentsIcon, Logo, PlusIcon } from '../components/icons';
+import { ClearIcon, Logo, PlusIcon } from '../components/icons';
 import { useMenuContext } from '../store/MenuContext';
-import { FC } from 'react';
-import { FileItem } from '../types';
-import { Tooltip } from 'react-tooltip';
 import electron from 'electron';
-import { Checkbox } from './Checkbox';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
-const FileListItem: FC<{ file: FileItem; selected?: boolean; clickHandler: (file: FileItem) => void }> = (props) => {
-    const { file } = props;
-    return (
-        <li
-            key={file.name}
-            onClick={() => props.clickHandler(file)}
-            className="group flex cursor-pointer items-center gap-2 py-4"
-        >
-            <Checkbox id={file.name} checked={props.selected} />
-            <span
-                data-tooltip-id={`${file.name}-tooltip`}
-                data-tooltip-content={file.name}
-                data-tooltip-delay-show={1000}
-                className="max-w-[14rem] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-lg font-bold text-amber-50"
-            >
-                {file.name.split('.')[0]}
-            </span>
-            <Tooltip className="z-50" id={`${file.name}-tooltip`} place="right" />
-        </li>
-    );
-};
-
 export const Sidebar = () => {
-    const {
-        files,
-        multiMode,
-        setMultiMode,
-        setFiles,
-        selectedFile,
-        setSelectedFile,
-        setIsProcessing,
-        setDownloadLink,
-        filesByExtension,
-    } = useMenuContext();
+    const { files, setFiles } = useMenuContext();
     const clearFiles = () => {
-        setFiles(null);
-        setSelectedFile(null);
-        setIsProcessing(false);
-        setDownloadLink(null);
-    };
-
-    const handleFileClick = (file: FileItem) => {
-        if (multiMode) {
-            console.log('placeholder');
-        } else {
-            setSelectedFile(file);
-        }
+        setFiles([]);
     };
 
     return (
         <section
-            className={`bg-gradient-to-b from-zinc-600 to-zinc-700 ${
-                files ? 'w-86 border-r-2 border-amber-200' : 'w-0'
+            className={`w-20 bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
+                files.length > 0 ? 'translate-x-0 border-r-2 border-amber-200' : ' -translate-x-20'
             }`}
         >
             {files && (
                 <>
-                    <div className="flex w-full border-r-2 border-amber-200 bg-amber-200 p-4">
-                        <Logo className="h-16" />
+                    <div className="relative mb-5 flex h-20 w-full border-r-2 border-amber-200 bg-amber-200 p-4">
+                        <Logo className="absolute bottom-0 left-2 h-16 w-16 stroke-zinc-800" />
                     </div>
-                    <ul className="my-4 mx-9 flex justify-between">
-                        <RoundButton
-                            disabled
-                            Icon={multiMode ? DocumentsIcon : DocumentIcon}
-                            tooltipId="multi-select"
-                            tooltip={multiMode ? 'Switch to single file mode' : 'Switch to multi-file mode'}
-                            onClick={() => setMultiMode(!multiMode)}
-                        />
+                    <ul className="flex flex-col items-center gap-4">
                         <RoundButton
                             Icon={ClearIcon}
                             onClick={clearFiles}
                             tooltipId="clear-files"
                             tooltip="Deselect all files"
+                            danger={true}
                         />
                         <RoundButton
                             Icon={PlusIcon}
@@ -94,38 +41,6 @@ export const Sidebar = () => {
                             }}
                         />
                     </ul>
-                    <div className="max-h-[calc(100vh-12.5rem)] overflow-y-scroll px-9">
-                        {filesByExtension['docx'] && (
-                            <>
-                                <h2 className="font-bold tracking-wider text-zinc-400">docx</h2>
-                                <ul className="flex flex-col">
-                                    {filesByExtension['docx'].map((file) => (
-                                        <FileListItem
-                                            key={file.name}
-                                            file={file}
-                                            selected={file.name === selectedFile?.name}
-                                            clickHandler={handleFileClick}
-                                        />
-                                    ))}
-                                </ul>
-                            </>
-                        )}
-                        {filesByExtension['mxliff'] && (
-                            <>
-                                <h2 className="font-bold tracking-wider text-zinc-400">mxliff</h2>
-                                <ul className="flex flex-col gap-2">
-                                    {filesByExtension['mxliff'].map((file) => (
-                                        <FileListItem
-                                            key={file.name}
-                                            file={file}
-                                            selected={file.name === selectedFile?.name}
-                                            clickHandler={handleFileClick}
-                                        />
-                                    ))}
-                                </ul>
-                            </>
-                        )}
-                    </div>
                 </>
             )}
         </section>

@@ -11,6 +11,9 @@ module.exports = {
       width: {
         86: '21.5rem',
       },
+      height: {
+        92: '23rem',
+      },
       gradientColorStopPositions: {
         150: '150%',
       }
