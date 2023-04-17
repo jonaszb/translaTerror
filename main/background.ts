@@ -67,6 +67,7 @@ const translateTable = async (jobData) => {
     ipcMain.on('addFiles', (event, arg) => {
         handleFileOpen(mainWindow).then((filePaths) => {
             event.sender.send('addFiles', filePaths);
+            mainWindow.focusOnWebView();
         });
     });
 
