@@ -45,6 +45,7 @@ function Home() {
         });
 
         window.addEventListener('drop', (e) => {
+            ipcRenderer && ipcRenderer.send('focusWindow');
             e.preventDefault();
             e.stopPropagation();
             const paths = Array.from(e.dataTransfer.files).map((file) => file.path);

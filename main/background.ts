@@ -64,10 +64,16 @@ const translateTable = async (jobData) => {
         minWidth: 460,
     });
 
+    ipcMain.on('focusWindow', () => {
+        mainWindow.setAlwaysOnTop(true);
+        mainWindow.show();
+        mainWindow.setAlwaysOnTop(false);
+        app.focus();
+    });
+
     ipcMain.on('addFiles', (event, arg) => {
         handleFileOpen(mainWindow).then((filePaths) => {
             event.sender.send('addFiles', filePaths);
-            mainWindow.focusOnWebView();
         });
     });
 
