@@ -54,7 +54,7 @@ const FileTile: FC = () => {
                 <Checkbox id={file.path} checked={file.selected} onChange={handleSelectToggle} />
                 <ClearIcon
                     onClick={handleDelete}
-                    className="hidden h-6 w-6 cursor-pointer stroke-zinc-900 transition-all hover:stroke-red-400 group-hover:block"
+                    className="hidden h-6 w-6 cursor-pointer stroke-zinc-900 transition-all hover:stroke-red-600 group-hover:block"
                 />
             </div>
             <div className="my-6 flex h-14 max-h-[3.5rem] min-h-[3.5rem] items-center">
@@ -66,7 +66,7 @@ const FileTile: FC = () => {
                 >
                     {file.name}
                 </span>
-                <Tooltip id={file.name} place="bottom" />
+                <Tooltip id={file.name} place="top" />
             </div>
             {file.extension === 'docx' && <DocxTileContent />}
             {file.extension === 'mxliff' && <MxliffTileContent />}

@@ -22,10 +22,16 @@ export const RoundButton: FC<
                 data-tooltip-content={tooltip}
                 data-tooltip-delay-show={1000}
                 className={`group flex aspect-square h-12 w-12 items-center justify-center rounded-full border-2 border-amber-200 transition-all disabled:pointer-events-none disabled:border-zinc-400 ${
-                    danger ? 'hover:border-red-400 hover:bg-red-400' : 'hover:border-amber-200 hover:bg-amber-200'
+                    danger ? 'hover:border-red-600 hover:bg-red-600' : 'hover:border-amber-200 hover:bg-amber-200'
                 }`}
             >
-                <Icon className="fill-amber-200 stroke-amber-200 group-hover:scale-125 group-hover:fill-slate-600 group-hover:stroke-slate-600 group-disabled:fill-zinc-400 group-disabled:stroke-zinc-400" />
+                <Icon
+                    className={`fill-amber-200 stroke-amber-200 transition-all group-hover:scale-125 group-disabled:fill-zinc-400 group-disabled:stroke-zinc-400 ${
+                        danger
+                            ? 'group-hover:fill-amber-50 group-hover:stroke-amber-50'
+                            : 'group-hover:fill-zinc-800 group-hover:stroke-zinc-800'
+                    }`}
+                />
             </button>
             {tooltip && <Tooltip id={tooltipId} place="right" />}
         </li>

@@ -1,4 +1,4 @@
-import { Tab, Transition } from '@headlessui/react';
+import { Tab } from '@headlessui/react';
 import { Dispatch, FC, SetStateAction } from 'react';
 import { useSingleFileContext } from '../store/SingleFileContext';
 
@@ -10,9 +10,9 @@ const ActionTabs: FC<{ tabs: string[]; selectedIndex: number; changeHandler: Dis
     const { file } = useSingleFileContext();
     return (
         <Tab.Group selectedIndex={selectedIndex} onChange={(index) => changeHandler(index)}>
-            <Tab.List className="flex gap-1 transition-all">
+            <Tab.List className="relative flex gap-1 transition-all">
                 {tabs.map((tab) => (
-                    <Tab key={`${file.name}-${tab}`} className="relative pb-1 outline-none">
+                    <Tab key={`${file.name}-${tab}`} className="relative outline-none">
                         {({ selected }) => (
                             <>
                                 <span
@@ -22,21 +22,16 @@ const ActionTabs: FC<{ tabs: string[]; selectedIndex: number; changeHandler: Dis
                                 >
                                     {tab}
                                 </span>
-                                <Transition
-                                    show={selected}
-                                    enter="transition-all ease-in-out absolute"
-                                    enterFrom="scale-x-0"
-                                    enterTo="scale-x-100"
-                                    leave="transition-all ease-in-out absolute"
-                                    leaveFrom="scale-x-100"
-                                    leaveTo="scale-x-0"
-                                >
-                                    <div className="absolute -bottom-1 left-0 h-[2px] w-20 scale-x-100 rounded bg-amber-200"></div>
-                                </Transition>
                             </>
                         )}
                     </Tab>
                 ))}
+                <div
+                    className="absolute -bottom-2 left-0 h-[2px] w-20 rounded-full bg-amber-200 transition-all ease-out"
+                    style={{
+                        transform: `translateX(${selectedIndex * 5.25}rem)`,
+                    }}
+                />
             </Tab.List>
         </Tab.Group>
     );
