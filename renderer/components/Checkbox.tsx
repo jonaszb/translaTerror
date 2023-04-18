@@ -24,7 +24,7 @@ export const Checkbox: FC<{ id: string; checked: boolean; onChange: () => void }
                     leaveFrom="scale-100"
                     leaveTo="scale-0"
                 >
-                    <div className="h-3.5 w-3.5 rounded-full bg-amber-200" />
+                    <div className="!z-0 h-3.5 w-3.5 rounded-full bg-amber-200" />
                 </Transition>
             </label>
         </>

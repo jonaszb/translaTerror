@@ -33,7 +33,7 @@ export const RoundButton: FC<
                     }`}
                 />
             </button>
-            {tooltip && <Tooltip id={tooltipId} place="right" />}
+            {tooltip && <Tooltip id={tooltipId} place="right" className="!z-20 !opacity-100" />}
         </li>
     );
 };
@@ -54,7 +54,7 @@ export const ActionButton: FC<
     const { children, className, isProcessing, downloadLink, onClick, btnText, ...btnProps } = props;
     return (
         <button
-            className={`relative h-16 w-full overflow-hidden rounded-full border border-amber-200 py-4 text-2xl font-semibold uppercase tracking-widest transition-all disabled:pointer-events-none disabled:opacity-50 ${
+            className={`relative h-16 w-full overflow-hidden rounded-full border border-zinc-700 py-4 text-2xl font-semibold uppercase tracking-widest transition-all disabled:pointer-events-none disabled:opacity-50 ${
                 className ?? ''
             } ${
                 isProcessing

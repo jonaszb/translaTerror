@@ -57,7 +57,7 @@ const DocxTileContent = () => {
         <>
             <ActionTabs tabs={actionTabs} selectedIndex={selectedTab} changeHandler={setSelectedTab} />
             {actionTabs[selectedTab] === 'Translate' && (
-                <div className="flex h-full w-full flex-col items-center">
+                <div className="flex h-full w-full flex-col justify-end">
                     <div className="mt-10 flex w-full items-center justify-between">
                         <LanguageSelect
                             label="Source"
@@ -65,7 +65,7 @@ const DocxTileContent = () => {
                             options={['auto', 'no', 'da', 'sv', 'pl', 'en']}
                             onChange={(value) => setFromLang(value)}
                         />
-                        <RightArrowIcon className="opacity-75" />
+                        <RightArrowIcon className="text-zinc-600" />
                         <LanguageSelect
                             label="Target"
                             value={toLang}
@@ -74,7 +74,7 @@ const DocxTileContent = () => {
                         />
                     </div>
                     <ActionButton
-                        className="my-5"
+                        className="my-4"
                         onClick={initiateTranslation}
                         isProcessing={isProcessing}
                         downloadLink={downloadLink}

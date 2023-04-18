@@ -1,28 +1,15 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useSingleFileContext } from '../store/SingleFileContext';
 import { Checkbox } from './Checkbox';
-import { ClearIcon, RightArrowIcon } from './icons';
+import { ClearIcon } from './icons';
 import { useMenuContext } from '../store/MenuContext';
-import { LanguageSelect } from './LanguageSelect';
 import { Tooltip } from 'react-tooltip';
-import { ActionButton } from './Buttons';
-import { ipcRenderer } from 'electron';
 import DocxTileContent from './docx/docxTileContent';
 import MxliffTileContent from './mxliff/mxliffTileContent';
 
 const FileTile: FC = () => {
     const { setFiles } = useMenuContext();
-    const {
-        file,
-        fromLang,
-        setFromLang,
-        toLang,
-        setToLang,
-        isProcessing,
-        downloadLink,
-        setDownloadLink,
-        setIsProcessing,
-    } = useSingleFileContext();
+    const { file } = useSingleFileContext();
     const handleDelete = () => {
         setFiles((previous) => {
             if (previous) {
@@ -49,12 +36,16 @@ const FileTile: FC = () => {
     };
 
     return (
-        <li className="group flex h-92 w-72 flex-col items-center rounded-lg bg-zinc-800 p-4 shadow-lg">
+        <li
+            className={`group flex h-92 w-72 flex-col items-center rounded-lg border bg-zinc-800  p-4 shadow-md transition-all ${
+                file.selected ? ' border-amber-200 border-opacity-50' : 'border-transparent'
+            }`}
+        >
             <div className="flex w-full justify-between">
                 <Checkbox id={file.path} checked={file.selected} onChange={handleSelectToggle} />
                 <ClearIcon
                     onClick={handleDelete}
-                    className="hidden h-6 w-6 cursor-pointer stroke-zinc-900 transition-all hover:stroke-red-600 group-hover:block"
+                    className="h-6 w-6 cursor-pointer stroke-zinc-900 opacity-0 transition-all hover:stroke-red-600 group-hover:opacity-100"
                 />
             </div>
             <div className="my-6 flex h-14 max-h-[3.5rem] min-h-[3.5rem] items-center">
@@ -62,7 +53,7 @@ const FileTile: FC = () => {
                     data-tooltip-id={file.name}
                     data-tooltip-content={file.name}
                     data-tooltip-delay-show={1000}
-                    className="block max-h-[3.5rem] w-full overflow-hidden break-all text-center text-lg font-bold tracking-wide text-amber-50"
+                    className="block max-h-[3.5rem] w-full overflow-hidden break-all text-center text-lg font-bold text-amber-50"
                 >
                     {file.name}
                 </span>
