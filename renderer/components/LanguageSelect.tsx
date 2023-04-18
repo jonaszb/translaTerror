@@ -27,7 +27,7 @@ export const LanguageSelect: FC<{
                     {selectedOption.label}
                 </Listbox.Button>
                 <Tooltip id={`${file.name}-${props.label}`} place="top" />
-                <Listbox.Options className="absolute top-full z-10 w-full rounded bg-amber-50">
+                <Listbox.Options className="absolute top-full z-10 w-full overflow-hidden rounded bg-amber-50">
                     {options.map((option) => (
                         <Listbox.Option key={option.id} value={option.value} as={Fragment}>
                             {({ active }) => (

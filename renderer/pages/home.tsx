@@ -66,7 +66,7 @@ function Home() {
             </Head>
             <main className="col grid h-screen w-screen grid-cols-[min-content_1fr] font-roboto">
                 <Sidebar />
-                <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll py-8 px-10">
+                <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll py-6 px-10">
                     {files.length > 0 && filesByExtension.docx && (
                         <FileGroup extension="docx" files={filesByExtension.docx} />
                     )}

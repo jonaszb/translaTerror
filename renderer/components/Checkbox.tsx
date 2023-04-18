@@ -13,7 +13,7 @@ export const Checkbox: FC<{ id: string; checked: boolean; onChange: () => void }
             />
             <label
                 htmlFor={props.id}
-                className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-amber-200 bg-zinc-900 peer-checked:border`}
+                className={`flex aspect-square h-6 w-6 cursor-pointer items-center justify-center rounded-full border border-zinc-600 bg-zinc-900 peer-checked:border-amber-200`}
             >
                 <Transition
                     show={!!props.checked}

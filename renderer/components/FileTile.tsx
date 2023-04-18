@@ -37,27 +37,26 @@ const FileTile: FC = () => {
 
     return (
         <li
-            className={`group flex h-92 w-72 flex-col items-center rounded-lg border bg-zinc-800  p-4 shadow-md transition-all ${
+            className={`group flex min-h-[20rem] w-72 flex-col items-center rounded-lg border bg-zinc-800  p-4 shadow-md transition-all ${
                 file.selected ? ' border-amber-200 border-opacity-50' : 'border-transparent'
             }`}
         >
-            <div className="flex w-full justify-between">
+            <div className="mb-12 flex w-full justify-between">
                 <Checkbox id={file.path} checked={file.selected} onChange={handleSelectToggle} />
-                <ClearIcon
-                    onClick={handleDelete}
-                    className="h-6 w-6 cursor-pointer stroke-zinc-900 opacity-0 transition-all hover:stroke-red-600 group-hover:opacity-100"
-                />
-            </div>
-            <div className="my-6 flex h-14 max-h-[3.5rem] min-h-[3.5rem] items-center">
                 <span
                     data-tooltip-id={file.name}
                     data-tooltip-content={file.name}
                     data-tooltip-delay-show={1000}
-                    className="block max-h-[3.5rem] w-full overflow-hidden break-all text-center text-lg font-bold text-amber-50"
+                    className="text-md block w-full overflow-hidden text-ellipsis whitespace-nowrap px-4 text-center font-bold text-amber-50"
                 >
                     {file.name}
                 </span>
                 <Tooltip id={file.name} place="top" />
+
+                <ClearIcon
+                    onClick={handleDelete}
+                    className="stroke-zinc-950 h-6 w-6 cursor-pointer opacity-0 transition-all hover:stroke-red-400 group-hover:opacity-100"
+                />
             </div>
             {file.extension === 'docx' && <DocxTileContent />}
             {file.extension === 'mxliff' && <MxliffTileContent />}

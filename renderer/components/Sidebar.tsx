@@ -1,9 +1,23 @@
-import { RoundButton } from './Buttons';
-import { ClearIcon, Logo, PlusIcon } from '../components/icons';
+import { BinIcon, LogoRound, PlusIcon } from '../components/icons';
 import { useMenuContext } from '../store/MenuContext';
 import electron from 'electron';
+import { FC } from 'react';
 
 const ipcRenderer = electron.ipcRenderer || false;
+
+const MenuButton: FC<React.ComponentProps<'button'> & { danger?: boolean }> = (props) => {
+    const { children, danger, className, ...restProps } = props;
+    return (
+        <button
+            className={`rounded-full bg-zinc-600 p-4 shadow-sm ${
+                danger ? 'hover:text-red-400' : 'hover:text-amber-200'
+            }`}
+            {...restProps}
+        >
+            {children}
+        </button>
+    );
+};
 
 export const Sidebar = () => {
     const { files, setFiles } = useMenuContext();
@@ -13,33 +27,24 @@ export const Sidebar = () => {
 
     return (
         <section
-            className={`w-20 bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
-                files.length > 0 ? 'translate-x-0 border-r-2 border-amber-200' : ' -translate-x-20'
+            className={`flex w-20 flex-col items-center bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
+                files.length > 0 ? 'translate-x-0 border-r-2 border-zinc-600' : ' -translate-x-20'
             }`}
         >
             {files && (
                 <>
-                    <div className="relative mb-5 flex h-20 w-full border-r-2 border-amber-200 bg-amber-200 p-4">
-                        <Logo className="absolute bottom-0 left-2 h-16 w-16 stroke-zinc-800" />
-                    </div>
-                    <ul className="flex flex-col items-center gap-4">
-                        <RoundButton
-                            Icon={ClearIcon}
-                            onClick={clearFiles}
-                            tooltipId="clear-files"
-                            tooltip="Deselect all files"
-                            danger={true}
-                        />
-                        <RoundButton
-                            Icon={PlusIcon}
-                            tooltipId="add-files"
-                            tooltip="Add more files"
-                            onClick={async () => {
-                                if (ipcRenderer) {
-                                    ipcRenderer.send('addFiles');
-                                }
+                    <LogoRound className="my-6 h-14 w-14" />
+                    <ul className="flex flex-col items-center gap-4 text-amber-50">
+                        <MenuButton danger={true} onClick={clearFiles}>
+                            <BinIcon />
+                        </MenuButton>
+                        <MenuButton
+                            onClick={() => {
+                                if (ipcRenderer) ipcRenderer.send('addFiles');
                             }}
-                        />
+                        >
+                            <PlusIcon />
+                        </MenuButton>
                     </ul>
                 </>
             )}
