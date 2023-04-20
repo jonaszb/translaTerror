@@ -16,7 +16,7 @@ const ActionTabs: FC<{ tabs: string[]; selectedIndex: number; changeHandler: Dis
                         {({ selected }) => (
                             <>
                                 <span
-                                    className={`block w-20 text-sm font-bold tracking-wider text-amber-50 transition-all hover:opacity-100 ${
+                                    className={`block w-20 text-sm font-medium tracking-wide text-amber-50 transition-all hover:opacity-100 ${
                                         selected ? '!opacity-100' : 'opacity-50'
                                     }`}
                                 >

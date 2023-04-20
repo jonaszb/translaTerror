@@ -12,10 +12,10 @@ const transitionProperties = {
     className: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
 };
 
-export const ActionButton: FC<
-    React.ComponentProps<'button'> & { isProcessing: boolean; downloadLink?: string; btnText: string }
-> = (props) => {
-    const { children, className, isProcessing, downloadLink, onClick, btnText, ...btnProps } = props;
+export const ActionButton: FC<React.ComponentProps<'button'> & { isProcessing: boolean; downloadLink?: string }> = (
+    props
+) => {
+    const { children, className, isProcessing, downloadLink, onClick, ...btnProps } = props;
     return (
         <button
             className={`relative h-16 w-full overflow-hidden rounded-full border border-zinc-700 py-4 text-2xl font-semibold uppercase tracking-widest transition-all disabled:pointer-events-none disabled:opacity-50 ${

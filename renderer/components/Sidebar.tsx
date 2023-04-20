@@ -34,18 +34,19 @@ export const Sidebar = () => {
             {files && (
                 <>
                     <LogoRound className="my-6 h-14 w-14" />
-                    <ul className="flex flex-col items-center gap-4 text-amber-50">
-                        <MenuButton danger={true} onClick={clearFiles}>
+                    <div className="flex flex-col items-center gap-4 text-amber-50">
+                        <MenuButton danger={true} onClick={clearFiles} name="Remove all">
                             <BinIcon />
                         </MenuButton>
                         <MenuButton
                             onClick={() => {
                                 if (ipcRenderer) ipcRenderer.send('addFiles');
                             }}
+                            name="Add files"
                         >
                             <PlusIcon />
                         </MenuButton>
-                    </ul>
+                    </div>
                 </>
             )}
         </section>

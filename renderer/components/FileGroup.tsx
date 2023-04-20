@@ -7,11 +7,13 @@ import PhraseIcon from '../public/images/Phrase.png';
 import Image from 'next/image';
 import { useMenuContext } from '../store/MenuContext';
 
-const SelectionButton: FC<React.ComponentProps<'button'>> = (props) => {
-    const { className, ...restProps } = props;
+const GroupActionButton: FC<React.ComponentProps<'button'> & { border?: boolean }> = (props) => {
+    const { className, border, ...restProps } = props;
     return (
         <button
-            className={`uppercase tracking-wide text-zinc-600 transition-all hover:text-zinc-400 ${className ?? ''}`}
+            className={`uppercase tracking-wide text-zinc-600 transition-all hover:text-zinc-400 ${className ?? ''} ${
+                border ? 'rounded-full border border-zinc-600 py-0.5 px-2 hover:border-zinc-400' : ''
+            }`}
             {...restProps}
         >
             {props.children}
@@ -40,6 +42,12 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
         setSelection(false);
     };
 
+    const handleRemoveSelected = () => {
+        ctx.setFiles((files) => {
+            return files.filter((file) => !file.selected);
+        });
+    };
+
     const areFilesSelected = files.some((file) => file.extension === extension && file.selected);
 
     return (
@@ -49,10 +57,22 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
                 {extension === 'docx' && <MsWordIcon className={extensionIconStyle} />}
                 {extension === 'mxliff' && <Image src={PhraseIcon} alt="Phrase icon" className={extensionIconStyle} />}
                 <div className="relative h-px w-full bg-zinc-700">
-                    <div className="absolute top-2 left-0 flex gap-4 text-xs font-bold text-zinc-700">
-                        <SelectionButton onClick={handleSelectAll}>Select all</SelectionButton>
+                    <div className="absolute bottom-1 left-0 flex gap-4 text-xs font-bold text-zinc-700">
+                        <GroupActionButton onClick={handleSelectAll}>Select all</GroupActionButton>
                         {areFilesSelected && (
-                            <SelectionButton onClick={handleDeselectAll}>Clear selection</SelectionButton>
+                            <GroupActionButton onClick={handleDeselectAll}>Clear selection</GroupActionButton>
+                        )}
+                    </div>
+                    <div className="absolute top-2 left-0 flex gap-4 text-xs font-bold text-zinc-700">
+                        {areFilesSelected && (
+                            <>
+                                <GroupActionButton border={true} onClick={handleRemoveSelected}>
+                                    Remove
+                                </GroupActionButton>
+                                {/* <GroupActionButton border={true} onClick={() => {}}>
+                                    Bulk operation
+                                </GroupActionButton> */}
+                            </>
                         )}
                     </div>
                 </div>
