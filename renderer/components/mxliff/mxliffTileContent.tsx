@@ -47,6 +47,12 @@ const MxliffTileContent = () => {
             <ActionTabs tabs={actionTabs} selectedIndex={selectedTab} changeHandler={setSelectedTab} />
             {actionTabs[selectedTab] === 'To docx' && (
                 <div className="flex h-full w-full flex-col justify-end">
+                    <span className="font-regular block text-sm text-zinc-600">
+                        <b className="mr-2 text-zinc-500">Output file</b>
+                    </span>
+                    <span className="pointer-events-none mt-2 w-fit max-w-[254px] overflow-hidden text-ellipsis whitespace-nowrap rounded border border-zinc-400 border-opacity-50 bg-zinc-700 bg-opacity-50 py-1 px-4 text-zinc-400 shadow">
+                        {file.name}_TAB.docx
+                    </span>
                     <ActionButton
                         className="my-4"
                         onClick={convertToDocx}

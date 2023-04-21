@@ -3,7 +3,7 @@ import { RightArrowIcon } from '../icons';
 import { LanguageSelect } from '../LanguageSelect';
 import { ipcRenderer } from 'electron';
 import { useSingleFileContext } from '../../store/SingleFileContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ActionTabs from '../ActionTabs';
 import type { FileItem } from '../../types';
 
@@ -35,6 +35,10 @@ const DocxTileContent = () => {
     } = useSingleFileContext();
     const [selectedTab, setSelectedTab] = useState(0);
     const [matchingMxliff, setMatchingMxliff] = useState<string | null>(null);
+    const mxliffData = useMemo(() => {
+        if (!matchingMxliff) return null;
+        return pathToFileItem(matchingMxliff);
+    }, [matchingMxliff]);
 
     const initiateTranslation = () => {
         if (isProcessing || !ipcRenderer) return;
@@ -64,13 +68,13 @@ const DocxTileContent = () => {
     const toMxliff = () => {
         if (isProcessing || !ipcRenderer) return;
         if (downloadLink) {
-            ipcRenderer.send('openDownloadLink', { downloadLink, file: pathToFileItem(matchingMxliff) });
+            ipcRenderer.send('openDownloadLink', { downloadLink, file: mxliffData });
         } else {
             const jobData = {
                 path: file.path,
                 name: file.name,
                 extension: file.extension,
-                mxliffData: pathToFileItem(matchingMxliff),
+                mxliffData,
             };
             setIsProcessing(true);
             ipcRenderer.send('convertDocxToMxliff', jobData);
@@ -101,19 +105,20 @@ const DocxTileContent = () => {
             }
         });
         ipcRenderer.on('selectFile', (event, data) => {
-            console.log(data);
             if (!data.path || data.path !== file.path) return;
             data.filePaths && data.filePaths.length > 0 && setMatchingMxliff(data.filePaths[0]);
         });
         ipcRenderer.on('matchingMxliffFound', (event, data) => {
             if (!data.path || data.path !== file.path) return;
-            if (!matchingMxliff && data.mxliffPath) setMatchingMxliff(data.mxliffPath);
+            if (!matchingMxliff && data.mxliffPath) {
+                setMatchingMxliff(data.mxliffPath);
+            }
         });
     }, []);
 
     useEffect(() => {
         setDownloadLink(null);
-        if (actionTabs[selectedTab] === 'To mxliff') {
+        if (actionTabs[selectedTab] === 'To mxliff' && !matchingMxliff) {
             findMatchingMxliff();
         }
     }, [actionTabs[selectedTab]]);
@@ -148,11 +153,20 @@ const DocxTileContent = () => {
             )}
             {actionTabs[selectedTab] === 'To mxliff' && (
                 <div className="flex h-full w-full flex-col justify-end">
-                    {matchingMxliff ? (
-                        <span className="text-amber-50">Match: {matchingMxliff}</span>
-                    ) : (
-                        <button onClick={sendMxliffSelectRequest}>Select mxliff</button>
-                    )}
+                    <span className="font-regular block text-sm text-zinc-600">
+                        <b className="mr-2 text-zinc-500">Target file</b>will be overwritten
+                    </span>
+                    <button
+                        onClick={sendMxliffSelectRequest}
+                        className={`mt-2 w-fit max-w-[254px] overflow-hidden text-ellipsis whitespace-nowrap rounded border border-opacity-20 bg-opacity-20 py-1 px-4 text-amber-50 shadow ${
+                            matchingMxliff
+                                ? 'border-green-300 bg-green-500 text-green-300'
+                                : 'border-red-300 bg-red-500 text-red-300'
+                        }`}
+                    >
+                        {matchingMxliff ? `${mxliffData.name}.${mxliffData.extension}` : 'Click to select'}
+                    </button>
+
                     <ActionButton
                         className="my-4"
                         onClick={toMxliff}

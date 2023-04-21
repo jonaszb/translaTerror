@@ -87,13 +87,13 @@ const LogoRound = (props: SVGProps<SVGSVGElement>) => {
                 />
                 <path
                     d="M20.2119 19.8363C20.2144 19.8163 20.2289 19.8194 20.2457 19.8194"
-                    stroke="#1E1E1E"
+                    stroke="#18181B"
                     strokeWidth="1.38835"
                     strokeLinecap="round"
                 />
-                <path d="M29.5596 18.9579V18.9404" stroke="#1E1E1E" strokeWidth="1.38835" strokeLinecap="round" />
-                <path d="M24.0996 22.8451V22.8789" stroke="#1E1E1E" strokeWidth="0.976985" strokeLinecap="round" />
-                <path d="M27.2942 22.5245V22.507" stroke="#1E1E1E" strokeWidth="0.976985" strokeLinecap="round" />
+                <path d="M29.5596 18.9579V18.9404" stroke="#18181B" strokeWidth="1.38835" strokeLinecap="round" />
+                <path d="M24.0996 22.8451V22.8789" stroke="#18181B" strokeWidth="0.976985" strokeLinecap="round" />
+                <path d="M27.2942 22.5245V22.507" stroke="#18181B" strokeWidth="0.976985" strokeLinecap="round" />
                 <path
                     d="M31.8435 32.3267C32.7228 36.1125 34.581 43.5318 34.9796 42.9221C35.6147 42.8049 37.0372 42.207 37.6468 40.7532"
                     stroke="#18181B"
@@ -118,8 +118,8 @@ const LogoRound = (props: SVGProps<SVGSVGElement>) => {
                     gradientUnits="userSpaceOnUse"
                     gradientTransform="translate(24 24) rotate(90) scale(24)"
                 >
-                    <stop stopColor="#FDE68A" />
-                    <stop offset="1" stopColor="#FCD34D" />
+                    <stop stopColor="#FDEC82" />
+                    <stop offset="1" stopColor="#FCC24D" />
                 </radialGradient>
                 <clipPath id="clip0_323_396">
                     <rect width="48" height="48" rx="24" fill="white" />
