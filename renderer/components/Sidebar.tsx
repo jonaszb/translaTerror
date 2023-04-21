@@ -33,7 +33,7 @@ export const Sidebar = () => {
         >
             {files && (
                 <>
-                    <LogoRound className="my-6 h-14 w-14" />
+                    <LogoRound className="my-6 h-14 w-14 rounded-full shadow" />
                     <div className="flex flex-col items-center gap-4 text-amber-50">
                         <MenuButton danger={true} onClick={clearFiles} name="Remove all">
                             <BinIcon />

@@ -28,7 +28,7 @@ const FileTile: FC = () => {
 
     return (
         <li
-            className={`flex min-h-[20rem] w-72 flex-col items-center rounded-lg border bg-zinc-800  p-4 shadow-md transition-all ${
+            className={`shadow-inner-white flex min-h-[20rem] w-72 flex-col items-center rounded-lg border  bg-zinc-800 p-4 transition-all ${
                 file.selected ? ' border-amber-200 border-opacity-50' : 'border-transparent'
             }`}
         >

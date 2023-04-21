@@ -9,6 +9,9 @@ module.exports = {
       'source-sans': ['Source Sans Pro', 'sans-serif'],
     },
     extend: {
+      boxShadow: {
+        'inner-white': 'inset 0 1px 1px 0px rgba(255, 255, 255, 0.1)',
+      },
       width: {
         86: '21.5rem',
       },
