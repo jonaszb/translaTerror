@@ -18,7 +18,7 @@ export async function requestForm(options: { formData: FormData; url: string; me
     return res.data;
 }
 
-export const translateTable = async (jobData) => {
+export const translateTable = async (jobData: { path: string; toLang: string; fromLang: string }) => {
     const { path, toLang, fromLang } = jobData;
     const formData = new FormData();
     const fileData = fs.readFileSync(path);

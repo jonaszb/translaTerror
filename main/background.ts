@@ -41,18 +41,24 @@ if (isProd) {
         });
     });
 
-    ipcMain.on('translateSingleDoc', async (event, arg) => {
-        const { path, name, eventId, extension } = arg;
-        const win = BrowserWindow.getFocusedWindow();
-        const downloadLink = await translateTable(arg);
-        if (typeof downloadLink === 'string') {
-            await download(win, downloadLink, {
-                directory: path.replace(`${name}.${extension}`, ''),
-                filename: `${name}_TAB.${extension}`,
-            });
+    ipcMain.on(
+        'translateSingleDoc',
+        async (
+            event,
+            arg: { path: string; name: string; eventId: string; extension: string; fromLang: string; toLang: string }
+        ) => {
+            const { path, name, eventId, extension, fromLang, toLang } = arg;
+            const win = BrowserWindow.getFocusedWindow();
+            const downloadLink = await translateTable({ path, toLang, fromLang });
+            if (typeof downloadLink === 'string') {
+                await download(win, downloadLink, {
+                    directory: path.replace(`${name}.${extension}`, ''),
+                    filename: `${name}_TAB.${extension}`,
+                });
+            }
+            event.sender.send('translateSingleDoc', { downloadLink, eventId });
         }
-        event.sender.send('translateSingleDoc', { downloadLink, eventId });
-    });
+    );
 
     ipcMain.on('convertMxliffToDocx', async (event, arg: { path: string; name: string; eventId: string }) => {
         const { path, name, eventId } = arg;
@@ -72,19 +78,17 @@ if (isProd) {
         return event.sender.send('matchingMxliffFound', { eventId, mxliffPath });
     });
 
-    ipcMain.on('convertDocxToMxliff', async (event, arg) => {
+    ipcMain.on('convertDocxToMxliff', async (event, arg: { path: string; mxliffData: FileItem; eventId: string }) => {
+        const { path, mxliffData, eventId } = arg;
         const win = BrowserWindow.getFocusedWindow();
-        const downloadLink = await docxToMxliff(arg.path, arg.mxliffData.path);
+        const downloadLink = await docxToMxliff(path, mxliffData.path);
         if (typeof downloadLink === 'string') {
-            const directory: string = arg.mxliffData.path.replace(
-                `${arg.mxliffData.name}.${arg.mxliffData.extension}`,
-                ''
-            );
-            const filename: string = `${arg.mxliffData.name}.mxliff`;
+            const directory = mxliffData.path.replace(`${mxliffData.name}.${mxliffData.extension}`, '');
+            const filename = `${mxliffData.name}.mxliff`;
 
             await download(win, downloadLink, { directory, filename });
         }
-        event.sender.send('docxToMxliff', { downloadLink, eventId: arg.eventId });
+        event.sender.send('docxToMxliff', { downloadLink, eventId });
     });
 
     ipcMain.on(

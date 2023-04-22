@@ -5,7 +5,6 @@ import { ipcRenderer } from 'electron';
 import { useSingleFileContext } from '../../store/SingleFileContext';
 import { useEffect, useMemo, useState } from 'react';
 import ActionTabs from '../ActionTabs';
-import type { FileItem } from '../../types';
 import { pathToFileItem } from '../../utils/utils';
 
 const actionTabs = ['Translate', 'To mxliff'];
