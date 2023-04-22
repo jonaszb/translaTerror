@@ -2,26 +2,14 @@ import React from 'react';
 import Head from 'next/head';
 import electron from 'electron';
 import { Sidebar } from '../components/Sidebar';
-import { FileItem } from '../types';
 import { NoFilesScreen } from '../components/NoFilesScreen';
 import { useMenuContext } from '../store/MenuContext';
 import FileGroup from '../components/FileGroup';
+import { pathToFileItem } from '../utils/utils';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
 const supportedExtensions = ['docx', 'mxliff'];
-
-const pathToFileItem = (path: string): FileItem => {
-    const nameWithExtension = path.split(/[\\\/]/).pop();
-    const lastDot = nameWithExtension.lastIndexOf('.');
-    const name = nameWithExtension.slice(0, lastDot);
-    const extension = nameWithExtension.slice(lastDot + 1);
-    return {
-        path,
-        name,
-        extension,
-    };
-};
 
 function Home() {
     const { files, setFiles, filesByExtension } = useMenuContext();

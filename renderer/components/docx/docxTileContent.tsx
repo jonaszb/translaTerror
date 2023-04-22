@@ -6,20 +6,9 @@ import { useSingleFileContext } from '../../store/SingleFileContext';
 import { useEffect, useMemo, useState } from 'react';
 import ActionTabs from '../ActionTabs';
 import type { FileItem } from '../../types';
+import { pathToFileItem } from '../../utils/utils';
 
 const actionTabs = ['Translate', 'To mxliff'];
-
-const pathToFileItem = (path: string): FileItem => {
-    const nameWithExtension = path.split(/[\\\/]/).pop();
-    const lastDot = nameWithExtension.lastIndexOf('.');
-    const name = nameWithExtension.slice(0, lastDot);
-    const extension = nameWithExtension.slice(lastDot + 1);
-    return {
-        path,
-        name,
-        extension,
-    };
-};
 
 const DocxTileContent = () => {
     const {
@@ -51,6 +40,7 @@ const DocxTileContent = () => {
                 path: file.path,
                 name: file.name,
                 extension: file.extension,
+                eventId: file.path,
             };
             setIsProcessing(true);
             ipcRenderer.send('translateSingleDoc', jobData);
@@ -58,11 +48,16 @@ const DocxTileContent = () => {
     };
 
     const sendMxliffSelectRequest = () => {
-        ipcRenderer.send('selectFile', { extensions: ['mxliff'], path: file.path });
+        ipcRenderer.send('selectFile', { extensions: ['mxliff'], path: file.path, eventId: file.path });
     };
 
     const findMatchingMxliff = () => {
-        ipcRenderer.send('findMatchingMxliff', { path: file.path, name: file.name, extension: file.extension });
+        ipcRenderer.send('findMatchingMxliff', {
+            path: file.path,
+            name: file.name,
+            extension: file.extension,
+            eventId: file.path,
+        });
     };
 
     const toMxliff = () => {
@@ -75,6 +70,7 @@ const DocxTileContent = () => {
                 name: file.name,
                 extension: file.extension,
                 mxliffData,
+                eventId: file.path,
             };
             setIsProcessing(true);
             ipcRenderer.send('convertDocxToMxliff', jobData);
@@ -82,8 +78,9 @@ const DocxTileContent = () => {
     };
 
     useEffect(() => {
+        findMatchingMxliff();
         ipcRenderer.on('translateSingleDoc', (event, data) => {
-            if (!data.path || data.path !== file.path) return;
+            if (!data.eventId || data.eventId !== file.path) return;
             setIsProcessing(false);
             try {
                 new URL(data.downloadLink);
@@ -94,7 +91,7 @@ const DocxTileContent = () => {
             }
         });
         ipcRenderer.on('docxToMxliff', (event, data) => {
-            if (!data.path || data.path !== file.path) return;
+            if (!data.eventId || data.eventId !== file.path) return;
             setIsProcessing(false);
             try {
                 new URL(data.downloadLink);
@@ -105,11 +102,11 @@ const DocxTileContent = () => {
             }
         });
         ipcRenderer.on('selectFile', (event, data) => {
-            if (!data.path || data.path !== file.path) return;
+            if (!data.eventId || data.eventId !== file.path) return;
             data.filePaths && data.filePaths.length > 0 && setMatchingMxliff(data.filePaths[0]);
         });
         ipcRenderer.on('matchingMxliffFound', (event, data) => {
-            if (!data.path || data.path !== file.path) return;
+            if (!data.eventId || data.eventId !== file.path) return;
             if (!matchingMxliff && data.mxliffPath) {
                 setMatchingMxliff(data.mxliffPath);
             }

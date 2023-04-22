@@ -21,7 +21,7 @@ const MxliffTileContent = () => {
             const jobData = {
                 path: file.path,
                 name: file.name,
-                extension: file.extension,
+                eventId: file.path,
             };
             setIsProcessing(true);
             ipcRenderer.send('convertMxliffToDocx', jobData);
@@ -30,7 +30,7 @@ const MxliffTileContent = () => {
 
     useEffect(() => {
         ipcRenderer.on('mxliffToDocx', (event, data) => {
-            if (!data.path || data.path !== file.path) return;
+            if (!data.eventId || data.eventId !== file.path) return;
             setIsProcessing(false);
             try {
                 new URL(data.downloadLink);
