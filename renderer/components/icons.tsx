@@ -3,6 +3,7 @@ import React, { SVGProps } from 'react';
 const Logo = (props: SVGProps<SVGSVGElement>) => {
     return (
         <svg
+            data-testid="logo"
             width="1149"
             height="1304"
             viewBox="0 0 1149 1304"
@@ -57,7 +58,15 @@ const Logo = (props: SVGProps<SVGSVGElement>) => {
 
 const LogoRound = (props: SVGProps<SVGSVGElement>) => {
     return (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+            data-testid="logo-round"
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
             <g clipPath="url(#clip0_323_396)">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_radial_323_396)" />
                 <path
@@ -129,36 +138,10 @@ const LogoRound = (props: SVGProps<SVGSVGElement>) => {
     );
 };
 
-const DocumentsIcon = (props: SVGProps<SVGSVGElement>) => {
-    return (
-        <svg width="18" height="20" viewBox="0 0 18 20" stroke="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-            <path d="M18 6.94C17.9896 6.84813 17.9695 6.75763 17.94 6.67V6.58C17.8919 6.47718 17.8278 6.38267 17.75 6.3V6.3L11.75 0.3C11.6673 0.222216 11.5728 0.158081 11.47 0.11C11.4402 0.10576 11.4099 0.10576 11.38 0.11C11.2784 0.0517412 11.1662 0.0143442 11.05 0H7C6.20435 0 5.44129 0.316071 4.87868 0.87868C4.31607 1.44129 4 2.20435 4 3V4H3C2.20435 4 1.44129 4.31607 0.87868 4.87868C0.316071 5.44129 0 6.20435 0 7V17C0 17.7956 0.316071 18.5587 0.87868 19.1213C1.44129 19.6839 2.20435 20 3 20H11C11.7956 20 12.5587 19.6839 13.1213 19.1213C13.6839 18.5587 14 17.7956 14 17V16H15C15.7956 16 16.5587 15.6839 17.1213 15.1213C17.6839 14.5587 18 13.7956 18 13V7C18 7 18 7 18 6.94ZM12 3.41L14.59 6H13C12.7348 6 12.4804 5.89464 12.2929 5.70711C12.1054 5.51957 12 5.26522 12 5V3.41ZM12 17C12 17.2652 11.8946 17.5196 11.7071 17.7071C11.5196 17.8946 11.2652 18 11 18H3C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V7C2 6.73478 2.10536 6.48043 2.29289 6.29289C2.48043 6.10536 2.73478 6 3 6H4V13C4 13.7956 4.31607 14.5587 4.87868 15.1213C5.44129 15.6839 6.20435 16 7 16H12V17ZM16 13C16 13.2652 15.8946 13.5196 15.7071 13.7071C15.5196 13.8946 15.2652 14 15 14H7C6.73478 14 6.48043 13.8946 6.29289 13.7071C6.10536 13.5196 6 13.2652 6 13V3C6 2.73478 6.10536 2.48043 6.29289 2.29289C6.48043 2.10536 6.73478 2 7 2H10V5C10 5.79565 10.3161 6.55871 10.8787 7.12132C11.4413 7.68393 12.2044 8 13 8H16V13Z" />
-        </svg>
-    );
-};
-
-const DocumentIcon = (props: SVGProps<SVGSVGElement>) => {
-    return (
-        <svg width="16" height="20" viewBox="0 0 16 20" stroke="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-            <path d="M16 6.94C15.9896 6.84813 15.9695 6.75763 15.94 6.67V6.58C15.8919 6.47718 15.8278 6.38267 15.75 6.3L9.75 0.3C9.66734 0.222216 9.57282 0.158081 9.47 0.11H9.38L9.06 0H3C2.20435 0 1.44129 0.316071 0.87868 0.87868C0.316071 1.44129 0 2.20435 0 3V17C0 17.7956 0.316071 18.5587 0.87868 19.1213C1.44129 19.6839 2.20435 20 3 20H13C13.7956 20 14.5587 19.6839 15.1213 19.1213C15.6839 18.5587 16 17.7956 16 17V7C16 7 16 7 16 6.94ZM10 3.41L12.59 6H10V3.41ZM14 17C14 17.2652 13.8946 17.5196 13.7071 17.7071C13.5196 17.8946 13.2652 18 13 18H3C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V3C2 2.73478 2.10536 2.48043 2.29289 2.29289C2.48043 2.10536 2.73478 2 3 2H8V7C8 7.26522 8.10536 7.51957 8.29289 7.70711C8.48043 7.89464 8.73478 8 9 8H14V17Z" />
-        </svg>
-    );
-};
-
-const ClearIcon = (props: SVGProps<SVGSVGElement>) => {
-    return (
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-            <path
-                d="M11.0546 9.2913L10.346 9.99893L11.0546 10.7066L18.9239 18.5642L18.9263 18.5665C18.9496 18.5897 18.9682 18.6173 18.9808 18.6476C18.9935 18.678 19 18.7106 19 18.7435C19 18.7764 18.9935 18.809 18.9808 18.8394C18.9682 18.8698 18.9496 18.8973 18.9263 18.9205L18.9263 18.9205L18.9205 18.9263C18.8973 18.9497 18.8698 18.9682 18.8394 18.9808C18.8091 18.9935 18.7765 19 18.7437 19C18.7108 19 18.6782 18.9935 18.6479 18.9808C18.6176 18.9682 18.59 18.9497 18.5668 18.9263L18.5645 18.924L10.7077 11.0538L10 10.3449L9.29229 11.0538L1.43549 18.924L1.43316 18.9263C1.40999 18.9497 1.38244 18.9682 1.3521 18.9808C1.32176 18.9935 1.28921 19 1.25634 19C1.22346 19 1.19092 18.9935 1.16058 18.9808C1.13024 18.9682 1.10268 18.9497 1.07952 18.9263L1.07954 18.9263L1.07372 18.9205C1.05037 18.8974 1.03183 18.8698 1.01917 18.8394C1.00652 18.809 1 18.7764 1 18.7435C1 18.7106 1.00652 18.678 1.01917 18.6476C1.03183 18.6173 1.05037 18.5897 1.07372 18.5665L1.07606 18.5642L8.94536 10.7066L9.65404 9.99893L8.94536 9.2913L1.07662 1.43422C1.07656 1.43416 1.0765 1.4341 1.07644 1.43404C1.02887 1.38637 1.00213 1.32174 1.00213 1.25434C1.00213 1.18685 1.02894 1.12215 1.07662 1.07446C1.12431 1.02677 1.18895 1 1.25634 1C1.32365 1 1.38824 1.02672 1.4359 1.07431C1.43595 1.07436 1.436 1.07441 1.43605 1.07446L9.29229 8.94403L10 9.65294L10.7077 8.94403L18.564 1.07446C18.5641 1.07432 18.5642 1.07417 18.5644 1.07403C18.612 1.02661 18.6765 1 18.7437 1C18.811 1 18.8757 1.02677 18.9234 1.07446C18.9711 1.12215 18.9979 1.18685 18.9979 1.25434C18.9979 1.32165 18.9712 1.38619 18.9238 1.43384C18.9236 1.43397 18.9235 1.4341 18.9234 1.43422L11.0546 9.2913Z"
-                strokeWidth="3"
-            />
-        </svg>
-    );
-};
-
 const PlusIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
         <svg
+            data-testid="plus-icon"
             width="16"
             height="16"
             viewBox="0 0 20 20"
@@ -177,13 +160,24 @@ const PlusIcon = (props: SVGProps<SVGSVGElement>) => {
 
 const Spinner = () => {
     return (
-        <div className="aspect-square w-10 animate-spin rounded-full border-4 border-zinc-800 border-r-transparent" />
+        <div
+            data-testid="spinner"
+            className="aspect-square w-10 animate-spin rounded-full border-4 border-zinc-800 border-r-transparent"
+        />
     );
 };
 
 const DownloadIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+            data-testid="dl-icon"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
             <path
                 d="M12 12V19M12 19L9.75 16.6667M12 19L14.25 16.6667M6.6 17.8333C4.61178 17.8333 3 16.1917 3 14.1667C3 12.498 4.09438 11.0897 5.59198 10.6457C5.65562 10.6268 5.7 10.5675 5.7 10.5C5.7 7.46243 8.11766 5 11.1 5C14.0823 5 16.5 7.46243 16.5 10.5C16.5 10.5582 16.5536 10.6014 16.6094 10.5887C16.8638 10.5306 17.1284 10.5 17.4 10.5C19.3882 10.5 21 12.1416 21 14.1667C21 16.1917 19.3882 17.8333 17.4 17.8333"
                 stroke="currentColor"
@@ -197,7 +191,15 @@ const DownloadIcon = (props: SVGProps<SVGSVGElement>) => {
 
 const MsWordIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+            data-testid="msword-icon"
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
             <g clipPath="url(#clip0_256_279)">
                 <path
                     d="M45.3957 0H12.6508C11.5207 0 10.6046 0.984796 10.6046 2.19961V12L29.5814 18L47.4418 12V2.19961C47.4418 0.984796 46.5257 0 45.3957 0Z"
@@ -261,7 +263,15 @@ const MsWordIcon = (props: SVGProps<SVGSVGElement>) => {
 
 const RightArrowIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
-        <svg width="16" height="26" viewBox="0 0 16 26" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+            data-testid="arrow-icon-r"
+            width="16"
+            height="26"
+            viewBox="0 0 16 26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
             <g clipPath="url(#clip0_256_237)">
                 <path
                     d="M15.5889 14.014L3.8454 25.5958C3.71159 25.7298 3.5521 25.8362 3.37621 25.9089C3.20031 25.9815 3.01151 26.0189 2.82082 26.0189C2.63013 26.0189 2.44135 25.9815 2.26545 25.9089C2.08955 25.8362 1.93006 25.7298 1.79626 25.5958L0.427776 24.2462C0.292272 24.1143 0.184679 23.9571 0.111246 23.7839C0.0378122 23.6106 0 23.4247 0 23.2369C0 23.0491 0.0378122 22.8632 0.111246 22.69C0.184679 22.5167 0.292272 22.3596 0.427776 22.2277L9.72675 13.0095L0.427776 3.79129C0.292272 3.65937 0.184679 3.50223 0.111246 3.32897C0.0378122 3.15572 0 2.9698 0 2.78202C0 2.59424 0.0378122 2.40832 0.111246 2.23507C0.184679 2.06182 0.292272 1.90467 0.427776 1.77275L1.79626 0.423112C1.93006 0.289115 2.08955 0.182705 2.26545 0.11007C2.44135 0.0374362 2.63013 2.78958e-05 2.82082 2.78958e-05C3.01151 2.78958e-05 3.20031 0.0374362 3.37621 0.11007C3.5521 0.182705 3.71159 0.289115 3.8454 0.423112L15.5889 12.0049C15.723 12.1367 15.8294 12.2932 15.9019 12.4656C15.9745 12.638 16.0119 12.8228 16.0119 13.0095C16.0119 13.1961 15.9745 13.3809 15.9019 13.5533C15.8294 13.7257 15.723 13.8823 15.5889 14.014Z"
@@ -279,7 +289,13 @@ const RightArrowIcon = (props: SVGProps<SVGSVGElement>) => {
 
 const PlayIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
-        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="currentColor" {...props}>
+        <svg
+            data-testid="play-icon"
+            viewBox="0 0 512 512"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            {...props}
+        >
             <path d="M405.2,232.9L126.8,67.2c-3.4-2-6.9-3.2-10.9-3.2c-10.9,0-19.8,9-19.8,20H96v344h0.1c0,11,8.9,20,19.8,20  c4.1,0,7.5-1.4,11.2-3.4l278.1-165.5c6.6-5.5,10.8-13.8,10.8-23.1C416,246.7,411.8,238.5,405.2,232.9z" />
         </svg>
     );
@@ -287,7 +303,14 @@ const PlayIcon = (props: SVGProps<SVGSVGElement>) => {
 
 const BinIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" {...props}>
+        <svg
+            data-testid="bin-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            {...props}
+        >
             <path
                 fill="currentColor"
                 fillRule="evenodd"
@@ -301,6 +324,7 @@ const BinIcon = (props: SVGProps<SVGSVGElement>) => {
 const InfoIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
         <svg
+            data-testid="info-icon"
             height="48"
             viewBox="0 0 48 48"
             width="48"
@@ -314,18 +338,4 @@ const InfoIcon = (props: SVGProps<SVGSVGElement>) => {
     );
 };
 
-export {
-    Logo,
-    LogoRound,
-    DocumentsIcon,
-    DocumentIcon,
-    ClearIcon,
-    PlusIcon,
-    DownloadIcon,
-    Spinner,
-    MsWordIcon,
-    RightArrowIcon,
-    PlayIcon,
-    BinIcon,
-    InfoIcon,
-};
+export { Logo, LogoRound, PlusIcon, DownloadIcon, Spinner, MsWordIcon, RightArrowIcon, PlayIcon, BinIcon, InfoIcon };

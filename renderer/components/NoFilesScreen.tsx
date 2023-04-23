@@ -1,10 +1,8 @@
 import { FC } from 'react';
-import electron from 'electron';
 import { Logo } from './icons';
+import { ipcRenderer } from 'electron';
 
-const ipcRenderer = electron.ipcRenderer || false;
-
-export const NoFilesScreen: FC = () => {
+const NoFilesScreen: FC = () => {
     return (
         <button
             className="group absolute top-0 left-0 h-screen w-screen p-9"
@@ -19,3 +17,5 @@ export const NoFilesScreen: FC = () => {
         </button>
     );
 };
+
+export default NoFilesScreen;

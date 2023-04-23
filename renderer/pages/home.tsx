@@ -1,9 +1,9 @@
 import React from 'react';
 import Head from 'next/head';
 import electron from 'electron';
-import { Sidebar } from '../components/Sidebar';
-import { NoFilesScreen } from '../components/NoFilesScreen';
-import { useMenuContext } from '../store/MenuContext';
+import Sidebar from '../components/Sidebar';
+import NoFilesScreen from '../components/NoFilesScreen';
+import { useFilesContext } from '../store/FilesContext';
 import FileGroup from '../components/FileGroup';
 import { pathToFileItem } from '../utils/utils';
 
@@ -12,7 +12,7 @@ const ipcRenderer = electron.ipcRenderer || false;
 const supportedExtensions = ['docx', 'mxliff'];
 
 function Home() {
-    const { files, setFiles, filesByExtension } = useMenuContext();
+    const { files, setFiles, filesByExtension } = useFilesContext();
 
     const addFiles = (paths?: string[]) => {
         if (!paths) return;

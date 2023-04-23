@@ -5,7 +5,7 @@ import FileTile from './FileTile';
 import { MsWordIcon } from './icons';
 import PhraseIcon from '../public/images/Phrase.png';
 import Image from 'next/image';
-import { useMenuContext } from '../store/MenuContext';
+import { useFilesContext } from '../store/FilesContext';
 
 const GroupActionButton: FC<React.ComponentProps<'button'> & { border?: boolean }> = (props) => {
     const { className, border, ...restProps } = props;
@@ -22,7 +22,7 @@ const GroupActionButton: FC<React.ComponentProps<'button'> & { border?: boolean 
 };
 
 const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ extension, files }) => {
-    const ctx = useMenuContext();
+    const ctx = useFilesContext();
     const extensionIconStyle = 'mx-3 h-12 w-12 shrink-0 translate-y-1';
 
     const setSelection = (selected: boolean) => {

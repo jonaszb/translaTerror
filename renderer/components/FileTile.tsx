@@ -1,13 +1,13 @@
 import { FC } from 'react';
 import { useSingleFileContext } from '../store/SingleFileContext';
 import { Checkbox } from './Checkbox';
-import { useMenuContext } from '../store/MenuContext';
+import { useFilesContext } from '../store/FilesContext';
 import { Tooltip } from 'react-tooltip';
 import DocxTileContent from './docx/docxTileContent';
 import MxliffTileContent from './mxliff/mxliffTileContent';
 
 const FileTile: FC = () => {
-    const { setFiles } = useMenuContext();
+    const { setFiles } = useFilesContext();
     const { file } = useSingleFileContext();
     const handleSelectToggle = () => {
         setFiles((previous) => {
@@ -28,7 +28,7 @@ const FileTile: FC = () => {
 
     return (
         <li
-            className={`shadow-inner-white flex min-h-[20rem] w-72 flex-col items-center rounded-lg border  bg-zinc-800 p-4 transition-all ${
+            className={`flex min-h-[20rem] w-72 flex-col items-center rounded-lg border bg-zinc-800  p-4 shadow-inner-white transition-all ${
                 file.selected ? ' border-amber-200 border-opacity-50' : 'border-transparent'
             }`}
         >

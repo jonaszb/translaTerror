@@ -1,9 +1,7 @@
 import { BinIcon, LogoRound, PlusIcon } from '../components/icons';
-import { useMenuContext } from '../store/MenuContext';
-import electron from 'electron';
+import { useFilesContext } from '../store/FilesContext';
+import { ipcRenderer } from 'electron';
 import { FC } from 'react';
-
-const ipcRenderer = electron.ipcRenderer || false;
 
 const MenuButton: FC<React.ComponentProps<'button'> & { danger?: boolean }> = (props) => {
     const { children, danger, className, ...restProps } = props;
@@ -19,16 +17,17 @@ const MenuButton: FC<React.ComponentProps<'button'> & { danger?: boolean }> = (p
     );
 };
 
-export const Sidebar = () => {
-    const { files, setFiles } = useMenuContext();
+const Sidebar = () => {
+    const { files, setFiles } = useFilesContext();
     const clearFiles = () => {
         setFiles([]);
     };
 
     return (
         <section
+            data-testid="sidebar"
             className={`flex w-20 flex-col items-center bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
-                files.length > 0 ? 'translate-x-0 border-r-2 border-zinc-600' : ' -translate-x-20'
+                files.length > 0 ? 'translate-x-0 border-r-2 border-zinc-600' : '-translate-x-20'
             }`}
         >
             {files && (
@@ -52,3 +51,5 @@ export const Sidebar = () => {
         </section>
     );
 };
+
+export default Sidebar;
