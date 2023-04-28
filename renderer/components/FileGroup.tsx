@@ -3,7 +3,6 @@ import SingleFileContextProvider from '../store/SingleFileContext';
 import { FileItem } from '../types';
 import FileTile from './FileTile';
 import { MsWordIcon } from './icons';
-import PhraseIcon from '../public/images/Phrase.png';
 import Image from 'next/image';
 import { useFilesContext } from '../store/FilesContext';
 
@@ -51,22 +50,39 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
     const areFilesSelected = files.some((file) => file.extension === extension && file.selected);
 
     return (
-        <section className="mb-8">
+        <section data-testid="file-group" className="mb-8">
             <div className="mb-8 flex items-center">
                 <div className="h-px w-8 shrink-0 bg-zinc-700" />
                 {extension === 'docx' && <MsWordIcon className={extensionIconStyle} />}
-                {extension === 'mxliff' && <Image src={PhraseIcon} alt="Phrase icon" className={extensionIconStyle} />}
+                {extension === 'mxliff' && (
+                    <Image
+                        src="/images/Phrase.png"
+                        width={48}
+                        height={48}
+                        alt="Phrase icon"
+                        className={extensionIconStyle}
+                        data-testid="phrase-icon"
+                    />
+                )}
                 <div className="relative h-px w-full bg-zinc-700">
                     <div className="absolute bottom-1 left-0 flex gap-4 text-xs font-bold text-zinc-700">
-                        <GroupActionButton onClick={handleSelectAll}>Select all</GroupActionButton>
+                        <GroupActionButton data-testid="select-all" onClick={handleSelectAll}>
+                            Select all
+                        </GroupActionButton>
                         {areFilesSelected && (
-                            <GroupActionButton onClick={handleDeselectAll}>Clear selection</GroupActionButton>
+                            <GroupActionButton data-testid="deselect-all" onClick={handleDeselectAll}>
+                                Clear selection
+                            </GroupActionButton>
                         )}
                     </div>
                     <div className="absolute top-2 left-0 flex gap-4 text-xs font-bold text-zinc-700">
                         {areFilesSelected && (
                             <>
-                                <GroupActionButton border={true} onClick={handleRemoveSelected}>
+                                <GroupActionButton
+                                    data-testid="remove-selected"
+                                    border={true}
+                                    onClick={handleRemoveSelected}
+                                >
                                     Remove
                                 </GroupActionButton>
                                 {/* <GroupActionButton border={true} onClick={() => {}}>

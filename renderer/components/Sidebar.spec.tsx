@@ -29,7 +29,7 @@ jest.mock(
     { virtual: true }
 );
 
-describe('Checkbox', () => {
+describe('Sidebar', () => {
     test('Contains the logo', async () => {
         const result = render(<SidebarWithCtx ctxProps={ctxProps} />);
         const logo = await result.findByTestId('logo-round');
