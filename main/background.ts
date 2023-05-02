@@ -10,6 +10,7 @@ import {
 } from './helpers';
 import { download } from 'electron-dl';
 import type { FileItem } from '../renderer/types';
+import { fragmentDocx } from './helpers/apiUtils';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
@@ -57,6 +58,27 @@ if (isProd) {
                 });
             }
             event.sender.send('translateSingleDoc', { downloadLink, eventId });
+        }
+    );
+
+    ipcMain.on(
+        'fragmentDocx',
+        async (event, arg: { path: string; name: string; eventId: string; fromLang?: string; toLang?: string }) => {
+            const { path, name, eventId, fromLang, toLang } = arg;
+            const win = BrowserWindow.getFocusedWindow();
+            const response = await fragmentDocx(path, fromLang, toLang);
+            if (isFragmentationResponse(response)) {
+                const { url: downloadLink, ...fragData } = response;
+                console.log('fragData', JSON.stringify(fragData));
+                console.log('downloadLink', downloadLink);
+                await download(win, downloadLink, {
+                    directory: path.replace(`${name}.docx`, ''),
+                    filename: `${name}_TAB.docx`,
+                });
+                event.sender.send('fragmentDocx', { downloadLink, fragData, eventId });
+            } else {
+                event.sender.send('fragmentDocx', { downloadLink: null, eventId });
+            }
         }
     );
 
@@ -123,3 +145,9 @@ if (isProd) {
 app.on('window-all-closed', () => {
     app.quit();
 });
+
+const isFragmentationResponse = (
+    arg: any
+): arg is { url: string; redundancy: number; redundancy_ratio: number; total_length: number } => {
+    return arg.url && arg.redundancy && arg.redundancy_ratio && arg.total_length;
+};

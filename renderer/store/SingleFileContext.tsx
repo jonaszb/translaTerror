@@ -11,6 +11,8 @@ export type SingleFileContextProps = {
     toLang: string;
     setToLang: React.Dispatch<React.SetStateAction<string>>;
     file: FileItem;
+    shouldTranslate: boolean;
+    setShouldTranslate: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const SingleFileContext = React.createContext<SingleFileContextProps>({
@@ -23,6 +25,8 @@ export const SingleFileContext = React.createContext<SingleFileContextProps>({
     toLang: 'pl',
     setToLang: () => null,
     file: null,
+    shouldTranslate: false,
+    setShouldTranslate: () => null,
 });
 
 const SingleFileContextProvider: React.FC<PropsWithChildren<{ file: FileItem }>> = (props) => {
@@ -30,6 +34,7 @@ const SingleFileContextProvider: React.FC<PropsWithChildren<{ file: FileItem }>>
     const [downloadLink, setDownloadLink] = React.useState<string | null>(null);
     const [fromLang, setFromLang] = React.useState('auto');
     const [toLang, setToLang] = React.useState('pl');
+    const [shouldTranslate, setShouldTranslate] = React.useState(false);
 
     const contextValue = {
         isProcessing,
@@ -40,6 +45,8 @@ const SingleFileContextProvider: React.FC<PropsWithChildren<{ file: FileItem }>>
         setFromLang,
         toLang,
         setToLang,
+        shouldTranslate,
+        setShouldTranslate,
     };
 
     React.useEffect(() => {

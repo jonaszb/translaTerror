@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useSingleFileContext } from '../store/SingleFileContext';
-import { Checkbox } from './Checkbox';
+import { Selectable } from './Selectable';
 import { useFilesContext } from '../store/FilesContext';
 import { Tooltip } from 'react-tooltip';
 import DocxTileContent from './docx/docxTileContent';
@@ -42,7 +42,7 @@ const FileTile: FC = () => {
                 >
                     {file.name}
                 </h3>
-                <Checkbox id={file.path} checked={file.selected} onChange={handleSelectToggle} />
+                <Selectable id={file.path} checked={file.selected} onChange={handleSelectToggle} />
                 <Tooltip id={file.name} place="top" />
             </div>
             {file.extension === 'docx' && <DocxTileContent />}

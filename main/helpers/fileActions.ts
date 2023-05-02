@@ -1,5 +1,6 @@
 import { dialog } from 'electron';
 import fs from 'fs';
+import decompress from 'decompress';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
@@ -14,6 +15,14 @@ export const findMatchingMxliff = async (path: string, name: string) => {
         matchingMxliff = mxliffFiles.find((file) => file === name);
     }
     return matchingMxliff ? `${dir}${matchingMxliff}.mxliff` : null;
+};
+
+export const decompressDocx = async (path) => {
+    const randomId = Math.random().toString(36).substring(7);
+    const fileName = path.split(/[\\\/]/).pop();
+    const dir = path.replace(fileName, `.temp_${randomId}`);
+    await decompress(path, dir);
+    return { dir, folderName: `.temp_${randomId}` };
 };
 
 export async function handleFileOpen(

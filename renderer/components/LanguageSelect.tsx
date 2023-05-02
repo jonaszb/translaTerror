@@ -8,6 +8,7 @@ export const LanguageSelect: FC<{
     onChange: (value: string) => void;
     options: string[];
     label: string;
+    disabled?: boolean;
 }> = (props) => {
     const options = props.options.map((option, i) => {
         return { id: i, value: option, label: option.toUpperCase() };
@@ -22,7 +23,7 @@ export const LanguageSelect: FC<{
                     data-tooltip-id={`${file.name}-${props.label}`}
                     data-tooltip-content={`${props.label} language`}
                     data-tooltip-delay-show={1000}
-                    className="h-10 w-24 cursor-pointer rounded-full bg-zinc-700 bg-transparent text-sm font-bold tracking-widest text-amber-50 outline-0 hover:brightness-110"
+                    className="h-10 w-24 cursor-pointer rounded-full bg-transparent bg-zinc-700 text-sm font-bold tracking-widest text-amber-50 outline-0 hover:brightness-110"
                 >
                     {selectedOption.label}
                 </Listbox.Button>
