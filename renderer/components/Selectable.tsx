@@ -38,7 +38,9 @@ export const Selectable: FC<{
                         />
                     </Transition>
                 </div>
-                {props.labelText && <span className={`ml-2 text-sm font-normal text-zinc-500`}>{props.labelText}</span>}
+                {props.labelText && (
+                    <span className="ml-2 block font-source-sans text-sm text-zinc-400">{props.labelText}</span>
+                )}
             </label>
         </div>
     );

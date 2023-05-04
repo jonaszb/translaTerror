@@ -3,10 +3,13 @@ import { useSingleFileContext } from '../../store/SingleFileContext';
 import ActionTabs from '../ActionTabs';
 import { ActionButton } from '../Buttons';
 import { ipcRenderer } from 'electron';
+import { useMxliffContext } from '../../store/MxliffContext';
+import SectionLabel from '../typography/SectionLabel';
 
 const actionTabs = ['To docx'];
 const MxliffTileContent = () => {
-    const { file, isProcessing, downloadLink, setIsProcessing, setDownloadLink } = useSingleFileContext();
+    const { file } = useSingleFileContext();
+    const { isProcessing, downloadLink, setIsProcessing, setDownloadLink } = useMxliffContext();
     const [selectedTab, setSelectedTab] = useState(0);
 
     const convertToDocx = () => {
@@ -47,18 +50,13 @@ const MxliffTileContent = () => {
             <ActionTabs tabs={actionTabs} selectedIndex={selectedTab} changeHandler={setSelectedTab} />
             {actionTabs[selectedTab] === 'To docx' && (
                 <div className="flex h-full w-full flex-col justify-end">
-                    <span className="font-regular block text-sm text-zinc-600">
-                        <b className="mr-2 text-zinc-500">Output file</b>
-                    </span>
-                    <span className="pointer-events-none mt-2 w-fit max-w-[254px] overflow-hidden text-ellipsis whitespace-nowrap rounded border border-zinc-400 border-opacity-50 bg-zinc-700 bg-opacity-50 py-1 px-4 text-zinc-400 shadow">
+                    <SectionLabel>Output file</SectionLabel>
+                    <span className="pointer-events-none mb-4 box-content w-fit max-w-[274px] overflow-hidden text-ellipsis whitespace-nowrap rounded border border-opacity-30 bg-zinc-700 bg-opacity-50 px-4 py-1.5 text-zinc-400 shadow">
                         {file.name}_TAB.docx
                     </span>
-                    <ActionButton
-                        className="my-4"
-                        onClick={convertToDocx}
-                        isProcessing={isProcessing}
-                        downloadLink={downloadLink}
-                    />
+                    <div className="flex justify-end">
+                        <ActionButton onClick={convertToDocx} isProcessing={isProcessing} downloadLink={downloadLink} />
+                    </div>
                 </div>
             )}
         </>

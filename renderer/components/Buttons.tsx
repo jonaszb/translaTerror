@@ -18,7 +18,7 @@ export const ActionButton: FC<React.ComponentProps<'button'> & { isProcessing: b
     const { children, className, isProcessing, downloadLink, onClick, ...btnProps } = props;
     return (
         <button
-            className={`relative h-16 w-full overflow-hidden rounded-full border border-zinc-700 py-4 text-2xl font-semibold uppercase tracking-widest transition-all disabled:pointer-events-none disabled:opacity-50 ${
+            className={`relative h-16 w-16 overflow-hidden rounded-full border border-amber-200 py-4 text-2xl font-semibold uppercase tracking-widest transition-all disabled:pointer-events-none disabled:opacity-50 ${
                 className ?? ''
             } ${
                 isProcessing
@@ -29,7 +29,7 @@ export const ActionButton: FC<React.ComponentProps<'button'> & { isProcessing: b
             {...btnProps}
         >
             <Transition show={!isProcessing && !downloadLink} {...transitionProperties}>
-                <PlayIcon className="h-12 w-12" />
+                <PlayIcon className="h-10 w-10 translate-x-[2px]" />
             </Transition>
             <Transition show={isProcessing} {...transitionProperties}>
                 <Spinner />

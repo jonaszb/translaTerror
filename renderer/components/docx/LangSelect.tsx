@@ -1,9 +1,13 @@
+import { RightArrowIcon } from '../icons';
+import { useDocxContext } from '../../store/DocxContext';
+
 import { FC, Fragment } from 'react';
 import { Listbox } from '@headlessui/react';
 import { Tooltip } from 'react-tooltip';
-import { useSingleFileContext } from '../store/SingleFileContext';
+import { useSingleFileContext } from '../../store/SingleFileContext';
+import SectionLabel from '../typography/SectionLabel';
 
-export const LanguageSelect: FC<{
+const LanguageSelect: FC<{
     value: string;
     onChange: (value: string) => void;
     options: string[];
@@ -47,3 +51,38 @@ export const LanguageSelect: FC<{
         </div>
     );
 };
+
+const LangSelect: FC<React.ComponentProps<'div'> & { disabled?: boolean; noLabel?: boolean }> = ({
+    disabled,
+    noLabel,
+    className,
+    ...props
+}) => {
+    const { fromLang, setFromLang, toLang, setToLang } = useDocxContext();
+    return (
+        <div {...props}>
+            {noLabel || <SectionLabel>Language</SectionLabel>}
+            <div
+                className={`flex items-center gap-2 ${disabled ? 'pointer-events-none opacity-30' : ''} ${
+                    className ?? ''
+                }`}
+            >
+                <LanguageSelect
+                    label="Source"
+                    value={fromLang}
+                    options={['auto', 'no', 'da', 'sv', 'pl', 'en']}
+                    onChange={(value) => setFromLang(value)}
+                />
+                <RightArrowIcon className="text-zinc-600" />
+                <LanguageSelect
+                    label="Target"
+                    value={toLang}
+                    options={['no', 'da', 'sv', 'pl', 'en']}
+                    onChange={(value) => setToLang(value)}
+                />
+            </div>
+        </div>
+    );
+};
+
+export default LangSelect;

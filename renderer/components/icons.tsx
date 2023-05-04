@@ -338,4 +338,58 @@ const InfoIcon = (props: SVGProps<SVGSVGElement>) => {
     );
 };
 
-export { Logo, LogoRound, PlusIcon, DownloadIcon, Spinner, MsWordIcon, RightArrowIcon, PlayIcon, BinIcon, InfoIcon };
+const CheckIcon = (props: SVGProps<SVGSVGElement>) => {
+    return (
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M11.7467 0.127888C12.0291 0.33708 12.0836 0.729242 11.8685 1.00381L5.01133 9.75378C4.89891 9.89724 4.72822 9.98649 4.54313 9.99859C4.35804 10.0107 4.17659 9.94447 4.04542 9.81694L0.188288 6.06695C-0.0627627 5.82288 -0.0627627 5.42715 0.188288 5.18307C0.439339 4.939 0.846372 4.939 1.09742 5.18307L4.43443 8.42738L10.8458 0.246255C11.0609 -0.0283092 11.4643 -0.0813041 11.7467 0.127888Z"
+                fill="#f4f4f5"
+            />
+        </svg>
+    );
+};
+
+const RedCrossIcon = (props: SVGProps<SVGSVGElement>) => {
+    return (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+            <path
+                d="M1 11L11 1M1 1L11 11"
+                stroke="#F87171"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+};
+
+const ExclamationTriangle = (props: SVGProps<SVGSVGElement>) => {
+    return (
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M7 5.69459V8.30367M1.19012 10.6523C0.649688 11.6959 1.32575 13 2.40722 13H11.5928C12.6742 13 13.3503 11.6959 12.8099 10.6523L8.2171 1.78316C7.67637 0.738948 6.32363 0.738948 5.7829 1.78316L1.19012 10.6523ZM7 10.3909H7.00468V10.3961H7V10.3909Z"
+                stroke="#FDE68A"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+};
+
+export {
+    Logo,
+    LogoRound,
+    PlusIcon,
+    DownloadIcon,
+    Spinner,
+    MsWordIcon,
+    RightArrowIcon,
+    PlayIcon,
+    BinIcon,
+    InfoIcon,
+    CheckIcon,
+    RedCrossIcon,
+    ExclamationTriangle,
+};

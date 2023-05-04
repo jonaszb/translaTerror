@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import SingleFileContextProvider from '../store/SingleFileContext';
 import { FileItem } from '../types';
 import FileTile from './FileTile';
 import { MsWordIcon } from './icons';
@@ -11,7 +10,7 @@ const GroupActionButton: FC<React.ComponentProps<'button'> & { border?: boolean 
     return (
         <button
             className={`uppercase tracking-wide text-zinc-600 transition-all hover:text-zinc-400 ${className ?? ''} ${
-                border ? 'rounded-full border border-zinc-600 py-0.5 px-2 hover:border-zinc-400' : ''
+                border ? 'rounded-full border border-zinc-600 px-2 py-0.5 hover:border-zinc-400' : ''
             }`}
             {...restProps}
         >
@@ -75,7 +74,7 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
                             </GroupActionButton>
                         )}
                     </div>
-                    <div className="absolute top-2 left-0 flex gap-4 text-xs font-bold text-zinc-700">
+                    <div className="absolute left-0 top-2 flex gap-4 text-xs font-bold text-zinc-700">
                         {areFilesSelected && (
                             <>
                                 <GroupActionButton
@@ -93,11 +92,9 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
                     </div>
                 </div>
             </div>
-            <ul className="flex flex-wrap gap-4">
+            <ul className="flex flex-wrap gap-8">
                 {files.map((file) => (
-                    <SingleFileContextProvider file={file} key={file.path}>
-                        <FileTile />
-                    </SingleFileContextProvider>
+                    <FileTile file={file} key={file.path} />
                 ))}
             </ul>
         </section>
