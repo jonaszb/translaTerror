@@ -4,3 +4,10 @@ export type FileItem = {
     extension: string;
     selected?: boolean;
 };
+
+export type DocxData = {
+    columns: number;
+    tables: number;
+    sourceLength: number;
+    totalLength: number;
+};

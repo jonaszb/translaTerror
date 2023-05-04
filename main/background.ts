@@ -7,6 +7,7 @@ import {
     mxliffToDocx,
     translateTable,
     handleFileOpen,
+    checkDocxData,
 } from './helpers';
 import { download } from 'electron-dl';
 import type { FileItem } from '../renderer/types';
@@ -130,6 +131,12 @@ if (isProd) {
         const win = BrowserWindow.getFocusedWindow();
         const filePaths = await handleFileOpen(win, { extensions, multiselect });
         event.sender.send('selectFile', { filePaths, eventId });
+    });
+
+    ipcMain.on('checkDocxData', async (event, arg) => {
+        const { path, eventId } = arg;
+        const data = await checkDocxData(path);
+        event.sender.send('checkDocxData', { data, eventId });
     });
 
     mainWindow.setBackgroundColor('#18181b');

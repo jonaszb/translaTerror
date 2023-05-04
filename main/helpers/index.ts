@@ -1,6 +1,6 @@
 import createWindow from './create-window';
 import { docxToMxliff, mxliffToDocx, requestForm, translateTable } from './apiUtils';
-import { findMatchingMxliff, handleFileOpen, decompressDocx } from './fileActions';
+import { findMatchingMxliff, handleFileOpen, decompressDocx, getXmlFromDocx, checkDocxData } from './fileActions';
 
 export {
     createWindow,
@@ -11,4 +11,6 @@ export {
     findMatchingMxliff,
     handleFileOpen,
     decompressDocx,
+    getXmlFromDocx,
+    checkDocxData,
 };

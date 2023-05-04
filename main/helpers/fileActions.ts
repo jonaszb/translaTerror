@@ -1,6 +1,8 @@
 import { dialog } from 'electron';
 import fs from 'fs';
 import decompress from 'decompress';
+import xpath from 'xpath';
+import { DOMParser } from 'xmldom';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
@@ -38,4 +40,26 @@ export async function handleFileOpen(
     } else {
         return filePaths;
     }
+}
+
+export async function getXmlFromDocx(path: string) {
+    const tempDir = await decompressDocx(path);
+    const doc = new DOMParser().parseFromString(fs.readFileSync(`${tempDir.dir}/word/document.xml`, 'utf-8'));
+    try {
+        fs.rmSync(tempDir.dir, { recursive: true, force: true });
+    } finally {
+        return doc;
+    }
+}
+
+export async function checkDocxData(path: string) {
+    const doc = await getXmlFromDocx(path);
+    const select = xpath.useNamespaces({ w: 'http://schemas.openxmlformats.org/wordprocessingml/2006/main' });
+    const tables = select('//w:tbl', doc);
+    const columns = select('//w:tblGrid/w:gridCol', doc);
+    const firstColCells = select('//w:tr/w:tc[1]//text()', doc);
+    const totalLength = select('//text()', doc).reduce((acc: number, cur) => acc + cur.toString().length, 0) as number;
+    const sourceLength = firstColCells.reduce((acc: number, cur) => acc + cur.toString().length, 0) as number;
+    const data = { columns: columns.length, tables: tables.length, sourceLength, totalLength };
+    return data;
 }
