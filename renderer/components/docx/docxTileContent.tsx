@@ -11,7 +11,7 @@ const actionTabs = ['Translate', 'To mxliff', 'Fragment'];
 
 const DocxTileContent = () => {
     const { file } = useSingleFileContext();
-    const { isProcessing, setIsProcessing, setDownloadLink, setDocxData } = useDocxContext();
+    const { isProcessing, setIsProcessing, setDownloadLink, setDocxData, setFragData } = useDocxContext();
     const [selectedTab, setSelectedTab] = useState(0);
 
     const checkData = () => {
@@ -60,10 +60,9 @@ const DocxTileContent = () => {
             if (!data.eventId || data.eventId !== file.path) return;
             setIsProcessing(false);
             try {
-                console.log('Received download link: ' + data.downloadLink);
-                console.log('Frag data: ' + JSON.stringify(data.fragData));
                 new URL(data.downloadLink);
                 setDownloadLink(data.downloadLink);
+                setFragData(data.fragData);
             } catch (e) {
                 console.log('Received invalid URL from main process: ' + JSON.stringify(data));
                 console.error(e);

@@ -7,6 +7,16 @@ import { useDocxContext } from '../../store/DocxContext';
 import FileInfo from '../FileInfoField';
 import { Selectable } from '../Selectable';
 import LangSelect from './LangSelect';
+import { Transition } from '@headlessui/react';
+
+const transitionProperties = {
+    enter: 'transition-all ease-in-out duration-1000',
+    enterFrom: 'opacity-0',
+    enterTo: 'opacity-100',
+    leave: 'transition-all ease-in duration-500',
+    leaveFrom: 'opacity-100',
+    leaveTo: 'opacity-0',
+};
 
 const FragmentPanel = () => {
     const { file } = useSingleFileContext();
@@ -19,6 +29,7 @@ const FragmentPanel = () => {
         fromLang,
         toLang,
         setIsProcessing,
+        fragData,
     } = useDocxContext();
 
     const fragmentDocx = () => {
@@ -67,11 +78,38 @@ const FragmentPanel = () => {
             />
             <LangSelect disabled={!shouldTranslate} noLabel={true} className="mb-4" />
             <div className="flex items-end justify-between">
-                <div className="flex gap-8">
-                    <FileInfo label="Character count" value={charCount} />
-                    {shouldTranslate && (
-                        <FileInfo label="Estimated cost" value={estCost} currency={allConditionsMet && '$'} />
-                    )}
+                <div>
+                    <Transition show={!downloadLink && !isProcessing} {...transitionProperties}>
+                        <div className="flex gap-4">
+                            <FileInfo label="Character count" value={charCount} />
+                            {shouldTranslate && (
+                                <FileInfo label="Estimated cost" value={estCost} currency={allConditionsMet && '$'} />
+                            )}
+                        </div>
+                    </Transition>
+                    <Transition
+                        show={!!downloadLink && !!fragData}
+                        {...{
+                            ...transitionProperties,
+                            leave: 'absolute hidden',
+                        }}
+                    >
+                        <div className="flex gap-4">
+                            {fragData && (
+                                <>
+                                    <FileInfo
+                                        label="Character count"
+                                        value={fragData.totalLength.toLocaleString().replace(/,/g, ' ')}
+                                    />
+                                    <FileInfo
+                                        label="Redundancy"
+                                        value={`${fragData.redundancy.toLocaleString().replace(/,/g, ' ')}`}
+                                        annotation={`${fragData.redundancyRatio}%`}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    </Transition>
                 </div>
                 <ActionButton
                     onClick={fragmentDocx}

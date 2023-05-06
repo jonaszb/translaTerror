@@ -51,7 +51,7 @@ const MxliffTileContent = () => {
             {actionTabs[selectedTab] === 'To docx' && (
                 <div className="flex h-full w-full flex-col justify-end">
                     <SectionLabel>Output file</SectionLabel>
-                    <span className="pointer-events-none mb-4 box-content w-fit max-w-[274px] overflow-hidden text-ellipsis whitespace-nowrap rounded border border-opacity-30 bg-zinc-700 bg-opacity-50 px-4 py-1.5 text-zinc-400 shadow">
+                    <span className="pointer-events-none mb-4 box-content w-fit max-w-[274px] overflow-hidden text-ellipsis whitespace-nowrap rounded border border-zinc-200 border-opacity-30 bg-zinc-700 bg-opacity-50 px-4 py-1.5 text-zinc-400 shadow">
                         {file.name}_TAB.docx
                     </span>
                     <div className="flex justify-end">

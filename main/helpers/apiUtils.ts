@@ -57,8 +57,9 @@ export const fragmentDocx = async (path: string, fromLang?: string, toLang?: str
     const fileName = path.split(/[\\\/]/).pop();
     formData.append('file', xmlData, fileName.replace('.docx', '.xml'));
     toLang && formData.append('target_language', toLang);
-    fromLang && formData.append('source_language', fromLang);
+    fromLang && fromLang !== 'auto' && formData.append('source_language', fromLang);
     const response = await requestForm({ formData, url: fragmentDocxUrl });
+    console.log(response);
     try {
         fs.rmSync(tempDir.dir, { recursive: true, force: true });
     } finally {

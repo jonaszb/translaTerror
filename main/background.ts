@@ -76,7 +76,15 @@ if (isProd) {
                     directory: path.replace(`${name}.docx`, ''),
                     filename: `${name}_TAB.docx`,
                 });
-                event.sender.send('fragmentDocx', { downloadLink, fragData, eventId });
+                event.sender.send('fragmentDocx', {
+                    downloadLink,
+                    fragData: {
+                        redundancy: fragData.redundancy,
+                        redundancyRatio: fragData.redundancy_ratio,
+                        totalLength: fragData.total_length,
+                    },
+                    eventId,
+                });
             } else {
                 event.sender.send('fragmentDocx', { downloadLink: null, eventId });
             }
@@ -156,5 +164,5 @@ app.on('window-all-closed', () => {
 const isFragmentationResponse = (
     arg: any
 ): arg is { url: string; redundancy: number; redundancy_ratio: number; total_length: number } => {
-    return arg.url && arg.redundancy && arg.redundancy_ratio && arg.total_length;
+    return arg && typeof arg === 'object' && 'url' in arg && 'redundancy' in arg && 'redundancy_ratio' in arg;
 };

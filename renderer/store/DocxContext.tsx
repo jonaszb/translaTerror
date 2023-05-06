@@ -16,6 +16,8 @@ export type DocxContextProps = {
     setDocxData: React.Dispatch<React.SetStateAction<DocxData>>;
     matchingMxliff: string | null;
     setMatchingMxliff: React.Dispatch<React.SetStateAction<string | null>>;
+    fragData: FragData | null;
+    setFragData: React.Dispatch<React.SetStateAction<FragData>>;
 };
 
 export const DocxContext = React.createContext<DocxContextProps>({
@@ -33,6 +35,8 @@ export const DocxContext = React.createContext<DocxContextProps>({
     setDocxData: () => null,
     matchingMxliff: null,
     setMatchingMxliff: () => null,
+    fragData: null,
+    setFragData: () => null,
 });
 
 const DocxContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -43,6 +47,7 @@ const DocxContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [shouldTranslate, setShouldTranslate] = useState(false);
     const [docxData, setDocxData] = useState<DocxData>(null);
     const [matchingMxliff, setMatchingMxliff] = useState<string | null>(null);
+    const [fragData, setFragData] = useState<FragData | null>(null);
 
     const contextValue = {
         isProcessing,
@@ -59,6 +64,8 @@ const DocxContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setDocxData,
         matchingMxliff,
         setMatchingMxliff,
+        fragData,
+        setFragData,
     };
 
     React.useEffect(() => {
@@ -82,3 +89,5 @@ export function useDocxContext() {
 }
 
 export default DocxContextProvider;
+
+type FragData = Record<'redundancy' | 'redundancyRatio' | 'totalLength', number>;
