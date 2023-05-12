@@ -2,7 +2,7 @@ import { dialog } from 'electron';
 import fs from 'fs';
 import decompress from 'decompress';
 import xpath from 'xpath';
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
