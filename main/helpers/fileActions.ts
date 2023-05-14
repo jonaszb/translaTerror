@@ -3,6 +3,7 @@ import fs from 'fs';
 import decompress from 'decompress';
 import xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
+import { download } from 'electron-dl';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
@@ -62,4 +63,26 @@ export async function checkDocxData(path: string) {
     const sourceLength = firstColCells.reduce((acc: number, cur) => acc + cur.toString().length, 0) as number;
     const data = { columns: columns.length, tables: tables.length, sourceLength, totalLength };
     return data;
+}
+
+export async function downloadFileFromLink(
+    window: Electron.BrowserWindow,
+    url: string,
+    options: { directory: string; filename: string }
+) {
+    const dlResult = { url, downloaded: false, directory: options.directory, fileName: options.filename };
+    if (!url) return { ...dlResult, directory: null, fileName: null };
+    try {
+        const file = await download(window, url, {
+            directory: options.directory,
+            filename: options.filename,
+        });
+        if (file.getSavePath()) {
+            return { ...dlResult, downloaded: true };
+        } else {
+            return { ...dlResult, directory: null, fileName: null };
+        }
+    } catch {
+        return { ...dlResult, directory: null, fileName: null };
+    }
 }

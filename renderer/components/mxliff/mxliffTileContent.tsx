@@ -36,8 +36,8 @@ const MxliffTileContent = () => {
             if (!data.eventId || data.eventId !== file.path) return;
             setIsProcessing(false);
             try {
-                new URL(data.downloadLink);
-                setDownloadLink(data.downloadLink);
+                new URL(data.downloadData.url);
+                setDownloadLink(data.downloadData.url);
             } catch (e) {
                 console.log('Received invalid URL from main process: ' + data);
                 console.error(e);

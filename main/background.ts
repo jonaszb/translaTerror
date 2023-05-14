@@ -8,6 +8,7 @@ import {
     translateTable,
     handleFileOpen,
     checkDocxData,
+    downloadFileFromLink,
 } from './helpers';
 import { download } from 'electron-dl';
 import type { FileItem } from '../renderer/types';
@@ -26,8 +27,8 @@ if (isProd) {
     const mainWindow = createWindow('main', {
         width: 1000,
         height: 600,
-        minHeight: 540,
-        minWidth: 460,
+        minHeight: 580,
+        minWidth: 530,
     });
 
     ipcMain.on('focusWindow', () => {
@@ -51,14 +52,15 @@ if (isProd) {
         ) => {
             const { path, name, eventId, extension, fromLang, toLang } = arg;
             const win = BrowserWindow.getFocusedWindow();
-            const downloadLink = await translateTable({ path, toLang, fromLang });
-            if (typeof downloadLink === 'string') {
-                await download(win, downloadLink, {
-                    directory: path.replace(`${name}.${extension}`, ''),
-                    filename: `${name}_TAB.${extension}`,
-                });
-            }
-            event.sender.send('translateSingleDoc', { downloadLink, eventId });
+            const { data: downloadLink, status } = await translateTable({ path, toLang, fromLang });
+            const downloadData =
+                status === 200 && typeof downloadLink === 'string'
+                    ? await downloadFileFromLink(win, downloadLink, {
+                          directory: path.replace(`${name}.${extension}`, ''),
+                          filename: `${name}_TAB.${extension}`,
+                      })
+                    : null;
+            event.sender.send('translateSingleDoc', { downloadData, eventId, status });
         }
     );
 
@@ -67,26 +69,28 @@ if (isProd) {
         async (event, arg: { path: string; name: string; eventId: string; fromLang?: string; toLang?: string }) => {
             const { path, name, eventId, fromLang, toLang } = arg;
             const win = BrowserWindow.getFocusedWindow();
-            const response = await fragmentDocx(path, fromLang, toLang);
+            const { data: response, status } = await fragmentDocx(path, fromLang, toLang);
             if (isFragmentationResponse(response)) {
                 const { url: downloadLink, ...fragData } = response;
-                console.log('fragData', JSON.stringify(fragData));
-                console.log('downloadLink', downloadLink);
-                await download(win, downloadLink, {
-                    directory: path.replace(`${name}.docx`, ''),
-                    filename: `${name}_TAB.docx`,
-                });
+                const downloadData =
+                    status === 200 && typeof downloadLink === 'string'
+                        ? await downloadFileFromLink(win, downloadLink, {
+                              directory: path.replace(`${name}.docx`, ''),
+                              filename: `${name}_TAB.docx`,
+                          })
+                        : null;
                 event.sender.send('fragmentDocx', {
-                    downloadLink,
+                    downloadData,
                     fragData: {
                         redundancy: fragData.redundancy,
                         redundancyRatio: fragData.redundancy_ratio,
                         totalLength: fragData.total_length,
                     },
                     eventId,
+                    status,
                 });
             } else {
-                event.sender.send('fragmentDocx', { downloadLink: null, eventId });
+                event.sender.send('fragmentDocx', { downloadData: null, eventId, status });
             }
         }
     );
@@ -94,13 +98,15 @@ if (isProd) {
     ipcMain.on('convertMxliffToDocx', async (event, arg: { path: string; name: string; eventId: string }) => {
         const { path, name, eventId } = arg;
         const win = BrowserWindow.getFocusedWindow();
-        const downloadLink = await mxliffToDocx(path);
-        if (typeof downloadLink === 'string') {
-            const directory = path.replace(`${name}.mxliff`, '');
-            const filename = `${name}_TAB.docx`;
-            await download(win, downloadLink, { directory, filename });
-        }
-        event.sender.send('mxliffToDocx', { downloadLink, eventId });
+        const { data: downloadLink, status } = await mxliffToDocx(path);
+        const downloadData =
+            status === 200 && typeof downloadLink === 'string'
+                ? await downloadFileFromLink(win, downloadLink, {
+                      directory: path.replace(`${name}.mxliff`, ''),
+                      filename: `${name}_TAB.docx`,
+                  })
+                : null;
+        event.sender.send('mxliffToDocx', { downloadData, eventId, status });
     });
 
     ipcMain.on('findMatchingMxliff', async (event, arg: { path: string; name: string; eventId: string }) => {
@@ -112,14 +118,15 @@ if (isProd) {
     ipcMain.on('convertDocxToMxliff', async (event, arg: { path: string; mxliffData: FileItem; eventId: string }) => {
         const { path, mxliffData, eventId } = arg;
         const win = BrowserWindow.getFocusedWindow();
-        const downloadLink = await docxToMxliff(path, mxliffData.path);
-        if (typeof downloadLink === 'string') {
-            const directory = mxliffData.path.replace(`${mxliffData.name}.${mxliffData.extension}`, '');
-            const filename = `${mxliffData.name}.mxliff`;
-
-            await download(win, downloadLink, { directory, filename });
-        }
-        event.sender.send('docxToMxliff', { downloadLink, eventId });
+        const { data: downloadLink, status } = await docxToMxliff(path, mxliffData.path);
+        const downloadData =
+            status === 200 && typeof downloadLink === 'string'
+                ? await downloadFileFromLink(win, downloadLink, {
+                      directory: mxliffData.path.replace(`${mxliffData.name}.${mxliffData.extension}`, ''),
+                      filename: `${mxliffData.name}.mxliff`,
+                  })
+                : null;
+        event.sender.send('docxToMxliff', { downloadData, eventId, status });
     });
 
     ipcMain.on(

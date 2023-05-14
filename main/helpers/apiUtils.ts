@@ -9,15 +9,30 @@ const translafeFnUrl = 'https://europe-central2-translaterror.cloudfunctions.net
 const mxliffConvertUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-mxliff-single';
 const fragmentDocxUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-fragment';
 
+const sendAuthRequest = async (data: { url: string; method: Method; headers?: FormData.Headers; data: any }) => {
+    try {
+        const client = await auth.getIdTokenClient(data.url);
+        const res = await client.request(data);
+        return res;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 export async function requestForm(options: { formData: FormData; url: string; method?: Method }) {
-    const client = await auth.getIdTokenClient(options.url);
-    const res = await client.request({
+    const requestData = {
         url: options.url,
         method: options.method ?? 'POST',
         headers: options.formData.getHeaders(),
         data: options.formData.getBuffer(),
-    });
-    return res.data;
+    };
+    const res = await sendAuthRequest(requestData);
+    if (isResponseWithData(res)) {
+        return { data: res.data, status: res.status };
+    } else {
+        return { data: null, status: 1 };
+    }
 }
 
 export const translateTable = async (jobData: { path: string; toLang: string; fromLang: string }) => {
@@ -53,18 +68,30 @@ export const docxToMxliff = async (path: string, mxliffPath: string) => {
 export const fragmentDocx = async (path: string, fromLang?: string, toLang?: string) => {
     const formData = new FormData();
     const tempDir = await decompressDocx(path);
-    const xmlData = fs.readFileSync(`${tempDir.dir}/word/document.xml`);
-    const fileName = path.split(/[\\\/]/).pop();
-    formData.append('file', xmlData, fileName.replace('.docx', '.xml'));
-    toLang && formData.append('target_language', toLang);
-    fromLang && fromLang !== 'auto' && formData.append('source_language', fromLang);
-    const response = await requestForm({ formData, url: fragmentDocxUrl });
-    console.log(response);
+    let response: { data: unknown; status: number };
     try {
-        fs.rmSync(tempDir.dir, { recursive: true, force: true });
+        const xmlData = fs.readFileSync(`${tempDir.dir}/word/document.xml`);
+        const fileName = path.split(/[\\\/]/).pop();
+        formData.append('file', xmlData, fileName.replace('.docx', '.xml'));
+        toLang && formData.append('target_language', toLang);
+        fromLang && fromLang !== 'auto' && formData.append('source_language', fromLang);
+        response = await requestForm({ formData, url: fragmentDocxUrl });
+        console.log(response);
+    } catch {
     } finally {
+        fs.rmSync(tempDir.dir, { recursive: true, force: true });
         return response;
     }
 };
 
 type Method = 'POST' | 'GET' | 'HEAD' | 'DELETE' | 'PUT' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
+
+const isResponseWithData = (response: unknown): response is { data: any; status: number } => {
+    return (
+        typeof response === 'object' &&
+        response !== null &&
+        'data' in response &&
+        'status' in response &&
+        typeof response.status === 'number'
+    );
+};
