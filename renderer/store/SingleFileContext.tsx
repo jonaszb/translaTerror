@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 
 export type SingleFileContextProps = {
     file: FileItem;

@@ -11,7 +11,7 @@ import {
     downloadFileFromLink,
 } from './helpers';
 import { download } from 'electron-dl';
-import type { FileItem } from '../renderer/types';
+import type { FileItem } from '../types';
 import { fragmentDocx } from './helpers/apiUtils';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';

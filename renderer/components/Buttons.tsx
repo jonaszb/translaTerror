@@ -35,7 +35,7 @@ export const ActionButton: FC<React.ComponentProps<'button'> & { isProcessing: b
                 <Spinner />
             </Transition>
             <Transition show={!!downloadLink && !isProcessing} {...transitionProperties}>
-                <DownloadIcon className="svg-animate" />
+                <DownloadIcon className={!isProcessing && !!downloadLink && 'svg-animate'} />
             </Transition>
         </button>
     );

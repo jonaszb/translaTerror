@@ -1,32 +1,57 @@
 import { ipcRenderer } from 'electron';
 import { useSingleFileContext } from '../../store/SingleFileContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import ActionTabs from '../ActionTabs';
 import TranslatePanel from './TranslatePanel';
 import { useDocxContext } from '../../store/DocxContext';
 import ToMxliffPanel from './ToMxliffPanel';
 import FragmentPanel from './FragmentPanel';
+import { useToastContext } from '../../store/ToastContext';
+import { EventDataWithLink } from '../../../types';
 
 const actionTabs = ['Translate', 'To mxliff', 'Fragment'];
 
 const DocxTileContent = () => {
     const { file } = useSingleFileContext();
-    const { isProcessing, setIsProcessing, setDownloadLink, setDocxData, setFragData } = useDocxContext();
+    const {
+        setIsProcessing,
+        setDownloadLink,
+        setDocxData,
+        setFragData,
+        setIsEvaluatingConditions,
+        evaluateConditions,
+    } = useDocxContext();
     const [selectedTab, setSelectedTab] = useState(0);
+    const { showToast } = useToastContext();
 
-    const checkData = () => {
-        if (isProcessing || !ipcRenderer) return;
-        const jobData = {
-            path: file.path,
-            eventId: file.path,
-        };
-        ipcRenderer.send('checkDocxData', jobData);
-    };
+    const setLinkAndToast = useCallback(
+        (data: EventDataWithLink, actionName: string) => {
+            setIsProcessing(false);
+            try {
+                new URL(data.downloadData.url);
+                setDownloadLink(data.downloadData.url);
+                showToast({
+                    title: `${actionName} complete`,
+                    outputInfo: { directory: data.downloadData.directory, fileName: data.downloadData.fileName },
+                    type: 'success',
+                });
+            } catch (e) {
+                console.error(e);
+                showToast({
+                    title: `${actionName} failed`,
+                    message: `Something went wrong while processing this request.\nStatus code: ${data.status}`,
+                    type: 'danger',
+                });
+            }
+        },
+        [setIsProcessing, setDownloadLink, showToast]
+    );
 
     useEffect(() => {
-        checkData();
+        evaluateConditions();
         ipcRenderer.on('checkDocxData', (event, { eventId, data }) => {
             if (!eventId || eventId !== file.path) return;
+            setIsEvaluatingConditions(false);
             if (data) {
                 setDocxData(data);
                 console.log('Received data: ' + JSON.stringify(data));
@@ -35,39 +60,18 @@ const DocxTileContent = () => {
 
         ipcRenderer.on('translateSingleDoc', (event, data) => {
             if (!data.eventId || data.eventId !== file.path) return;
-            setIsProcessing(false);
-            console.log('Received data: ' + JSON.stringify(data));
-            try {
-                new URL(data.downloadData.url);
-                setDownloadLink(data.downloadData.url);
-            } catch (e) {
-                console.log('Received invalid URL from main process: ' + data);
-                console.error(e);
-            }
+            setLinkAndToast(data, 'Translation');
         });
+
         ipcRenderer.on('docxToMxliff', (event, data) => {
             if (!data.eventId || data.eventId !== file.path) return;
-            setIsProcessing(false);
-            try {
-                new URL(data.downloadData.url);
-                setDownloadLink(data.downloadData.url);
-            } catch (e) {
-                console.log('Received invalid URL from main process: ' + data);
-                console.error(e);
-            }
+            setLinkAndToast(data, 'Mxliff conversion');
         });
 
         ipcRenderer.on('fragmentDocx', (event, data) => {
             if (!data.eventId || data.eventId !== file.path) return;
-            setIsProcessing(false);
-            try {
-                new URL(data.downloadData.url);
-                setDownloadLink(data.downloadData.url);
-                setFragData(data.fragData);
-            } catch (e) {
-                console.log('Received invalid URL from main process: ' + JSON.stringify(data));
-                console.error(e);
-            }
+            data.fragData && setFragData(data.fragData);
+            setLinkAndToast(data, 'Fragmentation');
         });
 
         return () => {

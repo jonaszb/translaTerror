@@ -11,3 +11,14 @@ export type DocxData = {
     sourceLength: number;
     totalLength: number;
 };
+
+export type EventDataWithLink = {
+    eventId: string;
+    status: number;
+    downloadData: {
+        downloaded: boolean;
+        url: string;
+        directory: string;
+        fileName: string;
+    };
+};

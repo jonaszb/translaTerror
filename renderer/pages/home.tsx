@@ -6,6 +6,7 @@ import NoFilesScreen from '../components/NoFilesScreen';
 import { useFilesContext } from '../store/FilesContext';
 import FileGroup from '../components/FileGroup';
 import { pathToFileItem } from '../utils/utils';
+import ToastContainer from '../components/toast/ToastContainer';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
@@ -52,9 +53,9 @@ function Home() {
             <Head>
                 <title>TranslaTerror</title>
             </Head>
-            <main className="col grid h-screen w-screen grid-cols-[min-content_1fr] font-roboto">
+            <main className="col relative grid h-screen w-screen grid-cols-[min-content_1fr] font-roboto">
                 <Sidebar />
-                <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll py-6 px-10">
+                <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll px-10 py-6">
                     {files.length > 0 && filesByExtension.docx && (
                         <FileGroup extension="docx" files={filesByExtension.docx} />
                     )}
@@ -64,6 +65,7 @@ function Home() {
 
                     {files.length === 0 && <NoFilesScreen />}
                 </div>
+                <ToastContainer />
             </main>
         </>
     );

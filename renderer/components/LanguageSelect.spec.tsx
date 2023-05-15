@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { FC } from 'react';
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 import SingleFileContextProvider from '../store/SingleFileContext';
 import { LanguageSelect } from './LanguageSelect';
 import { act } from 'react-dom/test-utils';

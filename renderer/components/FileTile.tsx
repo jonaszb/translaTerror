@@ -4,7 +4,7 @@ import { useFilesContext } from '../store/FilesContext';
 import { Tooltip } from 'react-tooltip';
 import DocxTileContent from './docx/DocxTileContent';
 import MxliffTileContent from './mxliff/mxliffTileContent';
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 import SingleFileContextProvider from '../store/SingleFileContext';
 import DocxContextProvider from '../store/DocxContext';
 import MxliffContextProvider from '../store/MxliffContext';

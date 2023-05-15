@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 import FileTile from './FileTile';
 import { MsWordIcon } from './icons';
 import Image from 'next/image';

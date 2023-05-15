@@ -1,5 +1,7 @@
-import React, { PropsWithChildren, useState } from 'react';
-import { DocxData } from '../types';
+import React, { PropsWithChildren, useState, useCallback } from 'react';
+import { DocxData } from '../../types';
+import { ipcRenderer } from 'electron';
+import { useSingleFileContext } from './SingleFileContext';
 
 export type DocxContextProps = {
     isProcessing: boolean;
@@ -18,6 +20,9 @@ export type DocxContextProps = {
     setMatchingMxliff: React.Dispatch<React.SetStateAction<string | null>>;
     fragData: FragData | null;
     setFragData: React.Dispatch<React.SetStateAction<FragData>>;
+    isEvaluatingConditions: boolean;
+    setIsEvaluatingConditions: React.Dispatch<React.SetStateAction<boolean>>;
+    evaluateConditions: () => Promise<void>;
 };
 
 export const DocxContext = React.createContext<DocxContextProps>({
@@ -37,9 +42,13 @@ export const DocxContext = React.createContext<DocxContextProps>({
     setMatchingMxliff: () => null,
     fragData: null,
     setFragData: () => null,
+    isEvaluatingConditions: false,
+    setIsEvaluatingConditions: () => null,
+    evaluateConditions: () => null,
 });
 
 const DocxContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
+    const { file } = useSingleFileContext();
     const [isProcessing, setIsProcessing] = useState(false);
     const [downloadLink, setDownloadLink] = useState<string | null>(null);
     const [fromLang, setFromLang] = useState('auto');
@@ -48,6 +57,17 @@ const DocxContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [docxData, setDocxData] = useState<DocxData>(null);
     const [matchingMxliff, setMatchingMxliff] = useState<string | null>(null);
     const [fragData, setFragData] = useState<FragData | null>(null);
+    const [isEvaluatingConditions, setIsEvaluatingConditions] = useState(false);
+
+    const evaluateConditions = useCallback(async () => {
+        if (isProcessing || !ipcRenderer) return;
+        setIsEvaluatingConditions(true);
+        const jobData = {
+            path: file.path,
+            eventId: file.path,
+        };
+        ipcRenderer.send('checkDocxData', jobData);
+    }, []);
 
     const contextValue = {
         isProcessing,
@@ -66,6 +86,9 @@ const DocxContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setMatchingMxliff,
         fragData,
         setFragData,
+        isEvaluatingConditions,
+        setIsEvaluatingConditions,
+        evaluateConditions,
     };
 
     React.useEffect(() => {

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 import { ipcRenderer } from 'electron';
 import NoFilesScreen from './NoFilesScreen';
 

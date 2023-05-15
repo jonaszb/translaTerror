@@ -1,16 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSingleFileContext } from '../../store/SingleFileContext';
 import ActionTabs from '../ActionTabs';
 import { ActionButton } from '../Buttons';
 import { ipcRenderer } from 'electron';
 import { useMxliffContext } from '../../store/MxliffContext';
 import SectionLabel from '../typography/SectionLabel';
+import { EventDataWithLink } from '../../../types';
+import { useToastContext } from '../../store/ToastContext';
 
 const actionTabs = ['To docx'];
 const MxliffTileContent = () => {
     const { file } = useSingleFileContext();
     const { isProcessing, downloadLink, setIsProcessing, setDownloadLink } = useMxliffContext();
     const [selectedTab, setSelectedTab] = useState(0);
+    const { showToast } = useToastContext();
+
+    const setLinkAndToast = useCallback(
+        (data: EventDataWithLink, actionName: string) => {
+            setIsProcessing(false);
+            try {
+                new URL(data.downloadData.url);
+                setDownloadLink(data.downloadData.url);
+                showToast({
+                    title: `${actionName} complete`,
+                    outputInfo: { directory: data.downloadData.directory, fileName: data.downloadData.fileName },
+                    type: 'success',
+                });
+            } catch (e) {
+                console.error(e);
+                showToast({
+                    title: `${actionName} failed`,
+                    message: `Something went wrong while processing this request.\nStatus code: ${data.status}`,
+                    type: 'danger',
+                });
+            }
+        },
+        [setIsProcessing, setDownloadLink, showToast]
+    );
 
     const convertToDocx = () => {
         if (isProcessing || !ipcRenderer) return;
@@ -34,14 +60,7 @@ const MxliffTileContent = () => {
     useEffect(() => {
         ipcRenderer.on('mxliffToDocx', (event, data) => {
             if (!data.eventId || data.eventId !== file.path) return;
-            setIsProcessing(false);
-            try {
-                new URL(data.downloadData.url);
-                setDownloadLink(data.downloadData.url);
-            } catch (e) {
-                console.log('Received invalid URL from main process: ' + data);
-                console.error(e);
-            }
+            setLinkAndToast(data, 'Docx convertion');
         });
     }, []);
 

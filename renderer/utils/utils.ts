@@ -1,4 +1,4 @@
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 
 export const pathToFileItem = (path: string): FileItem => {
     const nameWithExtension = path.split(/[\\\/]/).pop();

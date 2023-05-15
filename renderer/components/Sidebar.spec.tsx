@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { FC } from 'react';
 import FilesContextProvider from '../store/FilesContext';
-import { FileItem } from '../types';
+import { FileItem } from '../../types';
 import Sidebar from './Sidebar';
 import { ipcRenderer } from 'electron';
 
