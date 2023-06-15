@@ -6,10 +6,12 @@ import TranslatePanel from './TranslatePanel';
 import { useDocxContext } from '../../store/DocxContext';
 import ToMxliffPanel from './ToMxliffPanel';
 import FragmentPanel from './FragmentPanel';
-import { useToastContext } from '../../store/ToastContext';
-import { EventDataWithLink } from '../../../types';
 
-const actionTabs = ['Translate', 'To mxliff', 'Fragment'];
+import { useToastContext } from '../../store/ToastContext';
+import { EventDataWithFiles, EventDataWithLink } from '../../../types';
+import BookmarkPanel from './BookmarkPanel';
+
+const actionTabs = ['Translate', 'To mxliff', 'Fragment', 'Bookmark'];
 
 const DocxTileContent = () => {
     const { file } = useSingleFileContext();
@@ -25,14 +27,21 @@ const DocxTileContent = () => {
     const { showToast } = useToastContext();
 
     const setLinkAndToast = useCallback(
-        (data: EventDataWithLink, actionName: string) => {
+        (data: EventDataWithLink | EventDataWithFiles, actionName: string) => {
             setIsProcessing(false);
+            const hasLink = isEventWithLink(data);
             try {
-                new URL(data.downloadData.url);
-                setDownloadLink(data.downloadData.url);
+                if (data.status !== 200) throw new Error('Failed to process request');
+                if (hasLink) {
+                    new URL(data.downloadData.url);
+                    setDownloadLink(data.downloadData.url);
+                }
+                const outputInfo = hasLink
+                    ? { directory: data.downloadData.directory, fileName: data.downloadData.fileName }
+                    : data.files.map((file) => ({ directory: file.path, fileName: file.name }));
                 showToast({
                     title: `${actionName} complete`,
-                    outputInfo: { directory: data.downloadData.directory, fileName: data.downloadData.fileName },
+                    outputInfo: outputInfo,
                     type: 'success',
                 });
             } catch (e) {
@@ -74,6 +83,12 @@ const DocxTileContent = () => {
             setLinkAndToast(data, 'Fragmentation');
         });
 
+        ipcRenderer.on('bookmarkAndFragmentDocx', (event, data) => {
+            if (!data.eventId || data.eventId !== file.path) return;
+            data.fragData && setFragData(data.fragData);
+            setLinkAndToast(data, 'Fragmentation');
+        });
+
         return () => {
             ipcRenderer.removeAllListeners('checkDocxData');
             ipcRenderer.removeAllListeners('translateSingleDoc');
@@ -81,6 +96,7 @@ const DocxTileContent = () => {
             ipcRenderer.removeAllListeners('selectFile');
             ipcRenderer.removeAllListeners('matchingMxliffFound');
             ipcRenderer.removeAllListeners('fragmentDocx');
+            ipcRenderer.removeAllListeners('bookmarkAndFragmentDocx');
         };
     }, []);
 
@@ -107,8 +123,18 @@ const DocxTileContent = () => {
                     <FragmentPanel />
                 </div>
             )}
+            {actionTabs[selectedTab] === 'Bookmark' && (
+                <div className="flex h-full w-full flex-col justify-between">
+                    {' '}
+                    <BookmarkPanel />
+                </div>
+            )}
         </>
     );
+};
+
+const isEventWithLink = (data: EventDataWithLink | EventDataWithFiles): data is EventDataWithLink => {
+    return data.hasOwnProperty('downloadData');
 };
 
 export default DocxTileContent;

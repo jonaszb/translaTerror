@@ -3,6 +3,7 @@ import { useToastContext } from '../../store/ToastContext';
 import { CrossIcon } from '../icons';
 import { Transition } from '@headlessui/react';
 import { shell } from 'electron';
+import type { ToastOutputInfo } from '../../../types';
 
 const transitionProperties = {
     leave: 'transition-all ease-in duration-500',
@@ -13,7 +14,7 @@ const transitionProperties = {
 const Toast: FC<{
     title: string;
     message?: string;
-    outputInfo?: { directory: string; fileName: string };
+    outputInfo?: ToastOutputInfo;
     type: 'success' | 'danger';
     id: number;
 }> = ({ title, message, type, id, outputInfo }) => {
@@ -37,7 +38,7 @@ const Toast: FC<{
         });
         return () => clearTimeout(timer);
     }, []);
-
+    outputInfo = Array.isArray(outputInfo) ? outputInfo : [outputInfo];
     return (
         <Transition ref={ref} show={isShowing} {...transitionProperties}>
             <div className={`w-96 animate-fade-in rounded ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
@@ -55,16 +56,29 @@ const Toast: FC<{
                     </button>
                     <span className="mb-4 text-xl">{title}</span>
                     {message && <span className="whitespace-pre-wrap">{message}</span>}
-                    {outputInfo && (
-                        <div className="flex flex-col">
-                            <span className="font-light">File saved as:</span>
-                            <span
-                                onClick={() => shell.openPath(outputInfo.directory + outputInfo.fileName)}
-                                className="cursor-pointer underline"
-                            >
-                                {outputInfo.fileName}
-                            </span>
-                        </div>
+
+                    {type === 'success' && (
+                        <>
+                            <div className="flex flex-col">
+                                <span className="font-light">{`File${
+                                    outputInfo.length > 1 ? 's' : ''
+                                } saved as:`}</span>
+                                <ul className="flex flex-col gap-4">
+                                    {outputInfo &&
+                                        outputInfo.map((file) => {
+                                            return (
+                                                <li
+                                                    key={file.fileName}
+                                                    onClick={() => shell.openPath(file.directory + file.fileName)}
+                                                    className="cursor-pointer underline"
+                                                >
+                                                    {file.fileName}
+                                                </li>
+                                            );
+                                        })}
+                                </ul>
+                            </div>
+                        </>
                     )}
                 </div>
             </div>

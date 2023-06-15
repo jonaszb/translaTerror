@@ -4,6 +4,7 @@ import decompress from 'decompress';
 import xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import { download } from 'electron-dl';
+import { FileItem } from '../../types';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
@@ -20,7 +21,7 @@ export const findMatchingMxliff = async (path: string, name: string) => {
     return matchingMxliff ? `${dir}${matchingMxliff}.mxliff` : null;
 };
 
-export const decompressDocx = async (path) => {
+export const decompressDocx = async (path: string) => {
     const randomId = Math.random().toString(36).substring(7);
     const fileName = path.split(/[\\\/]/).pop();
     const dir = path.replace(fileName, `.temp_${randomId}`);
@@ -86,3 +87,15 @@ export async function downloadFileFromLink(
         return { ...dlResult, directory: null, fileName: null };
     }
 }
+
+export const pathToFileItem = (path: string): FileItem => {
+    const nameWithExtension = path.split(/[\\\/]/).pop();
+    const lastDot = nameWithExtension.lastIndexOf('.');
+    const name = nameWithExtension.slice(0, lastDot);
+    const extension = nameWithExtension.slice(lastDot + 1);
+    return {
+        path,
+        name,
+        extension,
+    };
+};

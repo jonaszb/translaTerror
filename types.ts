@@ -22,3 +22,24 @@ export type EventDataWithLink = {
         fileName: string;
     };
 };
+
+export type EventDataWithFiles = {
+    eventId: string;
+    status: number;
+    files: FileItem[];
+    fragData?: {
+        redundancy: number;
+        redundancyRatio: string;
+        totalLength: number;
+    };
+};
+
+export type Toast = {
+    title: string;
+    message?: string;
+    outputInfo?: ToastOutputInfo;
+    type: 'success' | 'danger';
+    id: number;
+};
+
+export type ToastOutputInfo = { directory: string; fileName: string } | { directory: string; fileName: string }[];

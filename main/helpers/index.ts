@@ -7,7 +7,9 @@ import {
     getXmlFromDocx,
     checkDocxData,
     downloadFileFromLink,
+    pathToFileItem,
 } from './fileActions';
+import { bookmarkAndFragmentDocx } from './fragmentation';
 
 export {
     createWindow,
@@ -21,4 +23,6 @@ export {
     getXmlFromDocx,
     checkDocxData,
     downloadFileFromLink,
+    bookmarkAndFragmentDocx,
+    pathToFileItem,
 };

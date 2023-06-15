@@ -9,6 +9,8 @@ import {
     handleFileOpen,
     checkDocxData,
     downloadFileFromLink,
+    bookmarkAndFragmentDocx,
+    pathToFileItem,
 } from './helpers';
 import { download } from 'electron-dl';
 import type { FileItem } from '../types';
@@ -152,6 +154,30 @@ if (isProd) {
         const { path, eventId } = arg;
         const data = await checkDocxData(path);
         event.sender.send('checkDocxData', { data, eventId });
+    });
+
+    ipcMain.on('bookmarkAndFragmentDocx', async (event, arg) => {
+        const { path, eventId } = arg;
+        try {
+            const { files, fragData } = await bookmarkAndFragmentDocx(pathToFileItem(path));
+            event.sender.send('bookmarkAndFragmentDocx', {
+                files: [pathToFileItem(files.bookmarkTable), pathToFileItem(files.fragmentTable)],
+                eventId,
+                status: 200,
+                fragData: {
+                    redundancy: fragData.redundancy,
+                    redundancyRatio: fragData.redundancyRatio,
+                    totalLength: fragData.totalLength,
+                },
+            });
+        } catch (e) {
+            console.error(e);
+            event.sender.send('bookmarkAndFragmentDocx', {
+                files: [],
+                eventId,
+                status: 500,
+            });
+        }
     });
 
     mainWindow.setBackgroundColor('#18181b');

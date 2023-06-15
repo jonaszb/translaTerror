@@ -17,6 +17,7 @@
         "@types/xmldom": "^0.1.31",
         "@xmldom/xmldom": "~0.8.4",
         "decompress": "^4.2.1",
+        "docx": "^8.0.4",
         "electron-dl": "^3.5.0",
         "electron-serve": "^1.1.0",
         "electron-store": "^8.1.0",

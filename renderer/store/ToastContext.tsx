@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
+import type { Toast, ToastOutputInfo } from '../../types';
 
 const ToastContext = createContext({
     showToast: (options: {
         title: string;
         message?: string;
         type: 'success' | 'danger';
-        outputInfo?: { directory: string; fileName: string };
+        outputInfo?: ToastOutputInfo;
     }) => {},
     removeToast: (id: number) => {},
     toasts: [] as Toast[],
@@ -18,7 +19,7 @@ export const ToastProvider = ({ children }) => {
         title: string;
         message: string;
         type: 'success' | 'danger';
-        outputInfo: { directory: string; fileName: string };
+        outputInfo: ToastOutputInfo;
     }) => {
         const { title, message, type, outputInfo } = options;
         const id = Math.floor(Math.random() * Date.now());
@@ -35,12 +36,4 @@ export const ToastProvider = ({ children }) => {
 export const useToastContext = () => {
     const { showToast, removeToast, toasts } = useContext(ToastContext);
     return { showToast, removeToast, toasts };
-};
-
-type Toast = {
-    title: string;
-    message?: string;
-    outputInfo?: { directory: string; fileName: string };
-    type: 'success' | 'danger';
-    id: number;
 };
