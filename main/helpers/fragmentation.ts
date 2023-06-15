@@ -5,7 +5,8 @@ import { decompressDocx } from './fileActions';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from 'docx';
 import { isDeepStrictEqual } from 'util';
 import { FileItem } from '../../types';
-import { exec, execSync } from 'child_process';
+import JSZip from 'jszip';
+import path from 'path';
 /**
  * Split the docx file into fragments and bookmark them in the original file.
  * Outputs 3 files:
@@ -15,7 +16,7 @@ import { exec, execSync } from 'child_process';
  * @param sourceFile
  */
 export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
-    const originalDocxDirectory = sourceFile.path.replace(`${sourceFile.name}${sourceFile.extension}`, '');
+    const originalDocxDirectory = sourceFile.path.replace(`${sourceFile.name}.${sourceFile.extension}`, '');
     console.log('Fragmenting file:');
     console.log(JSON.stringify(sourceFile, null, '\t'));
     let currentBmText = '';
@@ -226,12 +227,8 @@ export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
     const xml = doc.toString();
     fs.rmSync(`${dir}/word/document.xml`);
     fs.writeFileSync(`${dir}/word/document.xml`, xml, 'utf-8');
-    // Check the word/document directory
-    const files = fs.readdirSync(`${dir}/word`);
-    for (const file of files) {
-        console.log(file);
-    }
-    execSync(`cd "${dir}";zip -r "${sourceFile.path}" ./*`).toString();
+    zipFolder(dir, sourceFile.path);
+
     // remove the temp directory
     fs.rmSync(dir, { recursive: true, force: true });
     const redundancy = totalLengthInclRedundancy - totalLength;
@@ -247,4 +244,38 @@ export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
 
 const isNode = (node: unknown): node is Node => {
     return node.hasOwnProperty('childNodes');
+};
+
+const zipFolder = (folderPath: string, outputPath: string) => {
+    const zip = new JSZip();
+
+    function addFile(filePath: string, fileRelativePath: string) {
+        const data = fs.readFileSync(filePath);
+        zip.file(fileRelativePath, data);
+    }
+
+    function addFolder(folderPath: string, parentFolderName: string) {
+        const files = fs.readdirSync(folderPath);
+
+        for (const file of files) {
+            const filePath = path.join(folderPath, file);
+            const stats = fs.statSync(filePath);
+
+            if (stats.isDirectory()) {
+                const folderName = path.join(parentFolderName, file);
+                addFolder(filePath, folderName);
+            } else {
+                const fileRelativePath = path.join(parentFolderName, file);
+                addFile(filePath, fileRelativePath);
+            }
+        }
+    }
+
+    addFolder(folderPath, '');
+
+    zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
+        .pipe(fs.createWriteStream(outputPath))
+        .on('finish', function () {
+            console.log('Folder successfully zipped!');
+        });
 };
