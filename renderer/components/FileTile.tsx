@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Selectable } from './Selectable';
 import { useFilesContext } from '../store/FilesContext';
 import { Tooltip } from 'react-tooltip';
-import DocxTileContent from './docx/DocxTileContent';
+import DocxTileContent from './docx/docxTileContent';
 import MxliffTileContent from './mxliff/mxliffTileContent';
 import { FileItem } from '../../types';
 import SingleFileContextProvider from '../store/SingleFileContext';
