@@ -1,4 +1,5 @@
 import { BinIcon, LogoRound, PlusIcon } from '../components/icons';
+import { useAccKeyContext } from '../store/AccKeyContext';
 import { useFilesContext } from '../store/FilesContext';
 import { ipcRenderer } from 'electron';
 import { FC } from 'react';
@@ -17,8 +18,22 @@ const MenuButton: FC<React.ComponentProps<'button'> & { danger?: boolean }> = (p
     );
 };
 
+const KeyIcon = (props: React.ComponentProps<'svg'>) => {
+    return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M15.75 1.5C12.0221 1.5 9 4.52208 9 8.25C9 8.64372 9.03379 9.03016 9.0988 9.40639C9.16599 9.79527 9.06678 10.1226 8.87767 10.3117L2.37868 16.8107C1.81607 17.3733 1.5 18.1363 1.5 18.932V21.75C1.5 22.1642 1.83579 22.5 2.25 22.5H6C6.41421 22.5 6.75 22.1642 6.75 21.75V20.25H8.25C8.66421 20.25 9 19.9142 9 19.5V18H10.5C10.6989 18 10.8897 17.921 11.0303 17.7803L13.6883 15.1223C13.8774 14.9332 14.2047 14.834 14.5936 14.9012C14.9698 14.9662 15.3563 15 15.75 15C19.4779 15 22.5 11.9779 22.5 8.25C22.5 4.52208 19.4779 1.5 15.75 1.5ZM15.75 4.5C15.3358 4.5 15 4.83579 15 5.25C15 5.66421 15.3358 6 15.75 6C16.9926 6 18 7.00736 18 8.25C18 8.66421 18.3358 9 18.75 9C19.1642 9 19.5 8.66421 19.5 8.25C19.5 6.17893 17.8211 4.5 15.75 4.5Z"
+                fill="currentColor"
+            />
+        </svg>
+    );
+};
+
 const Sidebar = () => {
     const { files, setFiles } = useFilesContext();
+    const { hasValidKey, checkedForKey } = useAccKeyContext();
     const clearFiles = () => {
         setFiles([]);
     };
@@ -26,7 +41,7 @@ const Sidebar = () => {
     return (
         <section
             data-testid="sidebar"
-            className={`flex w-20 flex-col items-center bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
+            className={`relative flex w-20 flex-col items-center bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
                 files.length > 0 ? 'translate-x-0 border-r-2 border-zinc-600' : '-translate-x-20'
             }`}
         >
@@ -46,6 +61,14 @@ const Sidebar = () => {
                             <PlusIcon />
                         </MenuButton>
                     </div>
+                    {!hasValidKey && checkedForKey && (
+                        <button
+                            onClick={() => ipcRenderer.send('openAccKeyWindow')}
+                            className="absolute bottom-4 left-1/2 flex h-12 w-12 -translate-x-1/2 animate-pulse items-center justify-center rounded-full bg-red-600 bg-opacity-90 text-red-300 shadow"
+                        >
+                            <KeyIcon />
+                        </button>
+                    )}
                 </>
             )}
         </section>

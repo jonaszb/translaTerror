@@ -1,13 +1,71 @@
 import fs from 'fs';
 import FormData from 'form-data';
-import serviceKey from '../key.json';
 import { GoogleAuth } from 'google-auth-library';
 import { decompressDocx } from './fileActions';
-const auth = new GoogleAuth({ credentials: serviceKey });
+import Store from 'electron-store';
+import { BrowserWindow, ipcMain, safeStorage } from 'electron';
 
+const keyStore = new Store({ name: 'service-key' });
+const keyAsStored = keyStore.get('key');
+let key: any;
+let auth: GoogleAuth;
+try {
+    if (keyAsStored) {
+        key = safeStorage.isEncryptionAvailable()
+            ? safeStorage.decryptString(Buffer.from(keyAsStored as Buffer))
+            : keyAsStored;
+    }
+    const decodedKey = Buffer.from(key, 'base64').toString('ascii');
+    auth = new GoogleAuth({ credentials: JSON.parse(decodedKey) as any });
+} catch {
+    console.error('Invalid key');
+}
+
+const keyCheckUrl = 'https://europe-central2-translaterror.cloudfunctions.net/check';
 const translafeFnUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-translate';
 const mxliffConvertUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-mxliff-single';
 const fragmentDocxUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-fragment';
+
+ipcMain.on('setServiceKey', async (event, key) => {
+    const mainWindow = BrowserWindow.fromId(1);
+
+    try {
+        const decodedKey = Buffer.from(key, 'base64').toString('ascii');
+        const newAuth = new GoogleAuth({ credentials: JSON.parse(decodedKey) as any });
+        const client = await newAuth.getIdTokenClient(keyCheckUrl);
+        const res = await client.request({ url: keyCheckUrl, method: 'GET' });
+        if (res.status === 200) {
+            console.log('Setting new key');
+            const newKey = safeStorage.isEncryptionAvailable() ? safeStorage.encryptString(key) : key;
+            keyStore.set('key', newKey);
+            auth = newAuth;
+            mainWindow.webContents.send('serviceKeySet', true);
+            event.sender.send('serviceKeySet', true);
+        } else {
+            console.error('The key failed validation');
+            event.sender.send('serviceKeySet', false);
+        }
+    } catch {
+        console.error('Invalid key');
+        event.sender.send('serviceKeySet', false);
+    }
+});
+
+ipcMain.on('checkAccKey', async (event) => {
+    try {
+        const client = await auth.getIdTokenClient(keyCheckUrl);
+        const res = await client.request({ url: keyCheckUrl, method: 'GET' });
+        if (res.status === 200) {
+            event.sender.send('serviceKeySet', true);
+        } else {
+            console.error('The key failed validation');
+            event.sender.send('serviceKeySet', false);
+        }
+    } catch {
+        console.error('Invalid key');
+        event.sender.send('serviceKeySet', false);
+    }
+});
 
 const sendAuthRequest = async (data: { url: string; method: Method; headers?: FormData.Headers; data: any }) => {
     try {

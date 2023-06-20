@@ -1,5 +1,5 @@
 import { useSingleFileContext } from '../../store/SingleFileContext';
-import { ActionButtonLocal } from '../Buttons';
+import { ActionButton, ActionButtonLocal } from '../Buttons';
 import { ipcRenderer } from 'electron';
 import Checklist from '../Checklist';
 import { useMemo } from 'react';
@@ -30,6 +30,7 @@ const BookmarkPanel = () => {
         setIsProcessing,
         fragData,
         setFragData,
+        downloadLink,
     } = useDocxContext();
 
     const bookmarkAndFragmentDocx = () => {
@@ -112,12 +113,21 @@ const BookmarkPanel = () => {
                         </div>
                     </Transition>
                 </div>
-                <ActionButtonLocal
-                    onClick={bookmarkAndFragmentDocx}
-                    isProcessing={isProcessing}
-                    finished={!!fragData}
-                    disabled={!allConditionsMet}
-                />
+                {shouldTranslate ? (
+                    <ActionButton
+                        onClick={bookmarkAndFragmentDocx}
+                        isProcessing={isProcessing}
+                        downloadLink={downloadLink}
+                        disabled={!allConditionsMet}
+                    />
+                ) : (
+                    <ActionButtonLocal
+                        onClick={bookmarkAndFragmentDocx}
+                        isProcessing={isProcessing}
+                        finished={!!fragData}
+                        disabled={!allConditionsMet}
+                    />
+                )}
             </div>
         </>
     );

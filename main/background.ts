@@ -1,4 +1,4 @@
-import { app, ipcMain, BrowserWindow } from 'electron';
+import { app, Menu, ipcMain, BrowserWindow } from 'electron';
 import serve from 'electron-serve';
 import {
     createWindow,
@@ -23,6 +23,40 @@ if (isProd) {
 } else {
     app.setPath('userData', `${app.getPath('userData')} (development)`);
 }
+
+let accKeyWindow: BrowserWindow | null = null;
+
+const openAccKeyWindow = async () => {
+    if (accKeyWindow) {
+        try {
+            accKeyWindow.focus();
+            return;
+        } catch {
+            accKeyWindow = null;
+        }
+    }
+    accKeyWindow = createWindow('account-key', {
+        width: 560,
+        maxWidth: 800,
+        minWidth: 560,
+        height: 200,
+        minHeight: 200,
+        maxHeight: 200,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        },
+        backgroundColor: '#18181b',
+    });
+    // Go to account-key page
+    if (isProd) {
+        await accKeyWindow.loadURL('app://./account-key.html');
+    } else {
+        const port = process.argv[2];
+        await accKeyWindow.loadURL(`http://localhost:${port}/account-key`);
+        accKeyWindow.webContents.openDevTools();
+    }
+};
 
 (async () => {
     await app.whenReady();
@@ -180,6 +214,21 @@ if (isProd) {
         }
     });
 
+    ipcMain.on('closeAccKeyWindow', async (event, arg) => {
+        if (accKeyWindow) {
+            try {
+                accKeyWindow.close();
+            } finally {
+                accKeyWindow = null;
+            }
+            mainWindow.focus();
+        }
+    });
+
+    ipcMain.on('openAccKeyWindow', async (event, arg) => {
+        openAccKeyWindow();
+    });
+
     mainWindow.setBackgroundColor('#18181b');
     if (isProd) {
         await mainWindow.loadURL('app://./home.html');
@@ -189,6 +238,39 @@ if (isProd) {
         mainWindow.webContents.openDevTools();
     }
 })();
+
+const template = [
+    {
+        label: app.name,
+        submenu: [
+            {
+                label: 'Account key',
+                click: openAccKeyWindow,
+            },
+            {
+                label: 'Quit',
+                accelerator: 'Command+Q',
+                click: function () {
+                    app.quit();
+                },
+            },
+        ],
+    },
+    {
+        label: 'Edit',
+        submenu: [
+            { label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:' },
+            { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:' },
+            { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+            { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+            { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+            { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' },
+        ],
+    },
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
 
 app.on('window-all-closed', () => {
     app.quit();
