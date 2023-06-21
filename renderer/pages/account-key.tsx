@@ -44,17 +44,26 @@ function AccountKey() {
                 <title>Service Key</title>
             </Head>
             <main>
-                <form className="flex h-screen flex-col items-center justify-center px-16" onSubmit={submitHandler}>
+                <form
+                    className="flex h-screen flex-col items-center justify-center px-16 py-8"
+                    onSubmit={submitHandler}
+                >
+                    <p className="mb-4 font-source-sans text-zinc-200">
+                        TranslaTerror requires a service account key to unlock cloud-based operations. Contact the
+                        developer to obtain a key.
+                    </p>
                     <div className="mb-4 flex w-full flex-col">
                         <label className="text-lg text-zinc-200" htmlFor="service-key">
                             Service account key
                         </label>
                         <input
                             disabled={isProcessing}
-                            className={`w-full rounded border bg-transparent px-1.5 py-2 text-zinc-100 shadow-inner outline-none disabled:opacity-75 ${
-                                keyError ? ' border-red-500' : 'border-zinc-500'
+                            className={`w-full rounded border bg-transparent px-1.5 py-2 text-zinc-100 shadow-inner outline-none transition-all disabled:opacity-75 ${
+                                keyError
+                                    ? ' border-red-500'
+                                    : 'border-zinc-500 hover:border-zinc-400 focus:border-zinc-400'
                             }`}
-                            type="text"
+                            type="password"
                             id="service-key"
                             onChange={inputChangeHandler}
                         />

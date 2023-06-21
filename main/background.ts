@@ -36,12 +36,12 @@ const openAccKeyWindow = async () => {
         }
     }
     accKeyWindow = createWindow('account-key', {
-        width: 560,
-        maxWidth: 800,
-        minWidth: 560,
-        height: 200,
-        minHeight: 200,
-        maxHeight: 200,
+        width: 660,
+        maxWidth: 660,
+        minWidth: 660,
+        height: 280,
+        minHeight: 280,
+        maxHeight: 280,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
