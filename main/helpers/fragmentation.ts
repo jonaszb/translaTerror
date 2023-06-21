@@ -15,7 +15,7 @@ import { exec, execSync } from 'child_process';
  * @param sourceFile
  */
 export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
-    const originalDocxDirectory = sourceFile.path.replace(`${sourceFile.name}${sourceFile.extension}`, '');
+    const originalDocxDirectory = sourceFile.path.replace(`${sourceFile.name}.${sourceFile.extension}`, '');
     console.log('Fragmenting file:');
     console.log(JSON.stringify(sourceFile, null, '\t'));
     let currentBmText = '';
