@@ -70,7 +70,7 @@ const Toast: FC<{
                                                 <li
                                                     key={file.fileName}
                                                     onClick={() => shell.openPath(file.directory + file.fileName)}
-                                                    className="cursor-pointer underline"
+                                                    className="cursor-pointer break-words underline"
                                                 >
                                                     {file.fileName}
                                                 </li>
