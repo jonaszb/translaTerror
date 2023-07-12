@@ -5,7 +5,7 @@ import { decompressDocx } from './fileActions';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from 'docx';
 import { isDeepStrictEqual } from 'util';
 import { FileItem } from '../../types';
-import { exec, execSync } from 'child_process';
+import { execSync } from 'child_process';
 /**
  * Split the docx file into fragments and bookmark them in the original file.
  * Outputs 3 files:
@@ -231,9 +231,14 @@ export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
     for (const file of files) {
         console.log(file);
     }
+    console.log('-------------------');
+    console.log('Zipping the file...');
     execSync(`cd "${dir}";zip -r "${sourceFile.path}" ./*`).toString();
+    console.log('Done!');
     // remove the temp directory
+    console.log('Removing the temp directory...');
     fs.rmSync(dir, { recursive: true, force: true });
+    console.log('Done!');
     const redundancy = totalLengthInclRedundancy - totalLength;
     return {
         files: { original: sourceFile, bookmarkTable: bookmarkTableFilePath, fragmentTable: fragmentTableFilePath },

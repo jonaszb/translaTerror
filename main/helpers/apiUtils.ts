@@ -6,29 +6,32 @@ import Store from 'electron-store';
 import { BrowserWindow, ipcMain, safeStorage } from 'electron';
 
 const keyStore = new Store({ name: 'service-key' });
-const keyAsStored = keyStore.get('key');
 let key: any;
 let auth: GoogleAuth;
-try {
-    if (keyAsStored) {
-        key = safeStorage.isEncryptionAvailable()
-            ? safeStorage.decryptString(Buffer.from(keyAsStored as Buffer))
-            : keyAsStored;
-    }
-    const decodedKey = Buffer.from(key, 'base64').toString('ascii');
-    auth = new GoogleAuth({ credentials: JSON.parse(decodedKey) as any });
-} catch {
-    console.error('Invalid key');
-}
 
 const keyCheckUrl = 'https://europe-central2-translaterror.cloudfunctions.net/check';
 const translafeFnUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-translate';
 const mxliffConvertUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-mxliff-single';
 const fragmentDocxUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-fragment';
 
+const initialize = () => {
+    console.log('Initializing key');
+    const keyAsStored = keyStore.get('key');
+    try {
+        if (keyAsStored) {
+            key = safeStorage.isEncryptionAvailable()
+                ? safeStorage.decryptString(Buffer.from(keyAsStored as Buffer))
+                : keyAsStored;
+        }
+        const decodedKey = Buffer.from(key, 'base64').toString('ascii');
+        auth = new GoogleAuth({ credentials: JSON.parse(decodedKey) as any });
+    } catch {
+        console.error('Invalid key');
+    }
+};
+
 ipcMain.on('setServiceKey', async (event, key) => {
     const mainWindow = BrowserWindow.fromId(1);
-
     try {
         const decodedKey = Buffer.from(key, 'base64').toString('ascii');
         const newAuth = new GoogleAuth({ credentials: JSON.parse(decodedKey) as any });
@@ -52,6 +55,7 @@ ipcMain.on('setServiceKey', async (event, key) => {
 });
 
 ipcMain.on('checkAccKey', async (event) => {
+    if (!key) initialize();
     try {
         const client = await auth.getIdTokenClient(keyCheckUrl);
         const res = await client.request({ url: keyCheckUrl, method: 'GET' });

@@ -57,7 +57,7 @@ function Home() {
             <AccKeyProvider>
                 <main className="col relative grid h-screen w-screen grid-cols-[min-content_1fr] font-roboto">
                     <Sidebar />
-                    <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll px-10 py-6">
+                    <div className="col-start-2 h-full w-full min-w-[24rem] overflow-scroll overflow-y-auto overflow-x-hidden px-10 py-6">
                         {files.length > 0 && filesByExtension.docx && (
                             <FileGroup extension="docx" files={filesByExtension.docx} />
                         )}
