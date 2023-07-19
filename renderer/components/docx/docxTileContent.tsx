@@ -102,6 +102,7 @@ const DocxTileContent = () => {
 
     useEffect(() => {
         setDownloadLink(null);
+        setFragData(null);
     }, [actionTabs[selectedTab]]);
 
     return (

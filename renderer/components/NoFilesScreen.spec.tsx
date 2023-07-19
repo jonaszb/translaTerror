@@ -28,9 +28,3 @@ describe('Checkbox', () => {
         expect(ipcRenderer.send).toHaveBeenCalledWith('addFiles');
     });
 });
-
-type CtxProps = {
-    files: FileItem[];
-    setFiles: (files: FileItem[]) => void;
-    filesByExtension: Record<string, FileItem[]>;
-};

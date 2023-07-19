@@ -5,7 +5,7 @@ import { decompressDocx } from './fileActions';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from 'docx';
 import { isDeepStrictEqual } from 'util';
 import { FileItem } from '../../types';
-import { exec, execSync } from 'child_process';
+import { execSync } from 'child_process';
 /**
  * Split the docx file into fragments and bookmark them in the original file.
  * Outputs 3 files:
@@ -15,7 +15,7 @@ import { exec, execSync } from 'child_process';
  * @param sourceFile
  */
 export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
-    const originalDocxDirectory = sourceFile.path.replace(`${sourceFile.name}${sourceFile.extension}`, '');
+    const originalDocxDirectory = sourceFile.path.replace(`${sourceFile.name}.${sourceFile.extension}`, '');
     console.log('Fragmenting file:');
     console.log(JSON.stringify(sourceFile, null, '\t'));
     let currentBmText = '';
@@ -231,9 +231,14 @@ export async function bookmarkAndFragmentDocx(sourceFile: FileItem) {
     for (const file of files) {
         console.log(file);
     }
+    console.log('-------------------');
+    console.log('Zipping the file...');
     execSync(`cd "${dir}";zip -r "${sourceFile.path}" ./*`).toString();
+    console.log('Done!');
     // remove the temp directory
+    console.log('Removing the temp directory...');
     fs.rmSync(dir, { recursive: true, force: true });
+    console.log('Done!');
     const redundancy = totalLengthInclRedundancy - totalLength;
     return {
         files: { original: sourceFile, bookmarkTable: bookmarkTableFilePath, fragmentTable: fragmentTableFilePath },
