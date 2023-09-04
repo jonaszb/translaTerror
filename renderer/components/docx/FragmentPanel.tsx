@@ -13,7 +13,7 @@ const transitionProperties = {
     enter: 'transition-all ease-in-out duration-1000',
     enterFrom: 'opacity-0',
     enterTo: 'opacity-100',
-    leave: 'transition-all ease-in duration-500',
+    leave: 'transition-all ease-in duration-500 absolute hidden',
     leaveFrom: 'opacity-100',
     leaveTo: 'opacity-0',
 };
@@ -87,13 +87,7 @@ const FragmentPanel = () => {
                             )}
                         </div>
                     </Transition>
-                    <Transition
-                        show={!!downloadLink && !!fragData}
-                        {...{
-                            ...transitionProperties,
-                            leave: 'absolute hidden',
-                        }}
-                    >
+                    <Transition show={!!downloadLink && !!fragData} {...transitionProperties}>
                         <div className="flex gap-4">
                             {fragData && (
                                 <>
