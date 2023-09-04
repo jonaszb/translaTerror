@@ -193,7 +193,7 @@ const openAccKeyWindow = async () => {
     ipcMain.on('bookmarkAndFragmentDocx', async (event, arg) => {
         const { path, eventId } = arg;
         try {
-            const { files, fragData } = await bookmarkAndFragmentDocx(pathToFileItem(path));
+            const { files, fragData } = await bookmarkAndFragmentDocx(path);
             event.sender.send('bookmarkAndFragmentDocx', {
                 files: [pathToFileItem(files.bookmarkTable), pathToFileItem(files.fragmentTable)],
                 eventId,

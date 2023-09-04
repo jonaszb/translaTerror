@@ -1,10 +1,8 @@
 import { dialog } from 'electron';
 import fs from 'fs';
-import decompress from 'decompress';
-import xpath from 'xpath';
-import { DOMParser } from '@xmldom/xmldom';
 import { download } from 'electron-dl';
 import { FileItem } from '../../types';
+import DocxFile from '../models/DocxFile';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
@@ -19,14 +17,6 @@ export const findMatchingMxliff = async (path: string, name: string) => {
         matchingMxliff = mxliffFiles.find((file) => file === name);
     }
     return matchingMxliff ? `${dir}${matchingMxliff}.mxliff` : null;
-};
-
-export const decompressDocx = async (path: string) => {
-    const randomId = Math.random().toString(36).substring(7);
-    const fileName = path.split(/[\\\/]/).pop();
-    const dir = path.replace(fileName, `.temp_${randomId}`);
-    await decompress(path, dir);
-    return { dir, folderName: `.temp_${randomId}` };
 };
 
 export async function handleFileOpen(
@@ -44,26 +34,42 @@ export async function handleFileOpen(
     }
 }
 
-export async function getXmlFromDocx(path: string) {
-    const tempDir = await decompressDocx(path);
-    const doc = new DOMParser().parseFromString(fs.readFileSync(`${tempDir.dir}/word/document.xml`, 'utf-8'));
+export async function bookmarkAndFragmentDocx(path: string) {
+    const docx = new DocxFile(path);
     try {
-        fs.rmSync(tempDir.dir, { recursive: true, force: true });
-    } finally {
-        return doc;
+        const bookmarkTableFilePath = docx.getPathWithSuffix('_TT');
+        const fragmentTableFilePath = docx.getPathWithSuffix('_TT_TAB');
+        docx.createBackup();
+        console.log('Reading docx file');
+        await docx.read();
+        console.log('Creating bookmarks');
+        await docx.addBookmarks();
+        console.log('Creating tables');
+        const bookmarkTable = await docx.createBookmarkTable();
+        const fragmentTable = await docx.createFragmentTable();
+        console.log('Saving changes');
+        await docx.saveChanges();
+        console.log('Saving tables');
+        fs.writeFileSync(bookmarkTableFilePath, bookmarkTable);
+        fs.writeFileSync(fragmentTableFilePath, fragmentTable);
+        return {
+            files: {
+                bookmarkTable: bookmarkTableFilePath,
+                fragmentTable: fragmentTableFilePath,
+            },
+            fragData: docx.getFragData(),
+        };
+    } catch (e) {
+        docx.restoreBackup();
+        docx.deleteBackup();
+        throw e;
     }
 }
 
 export async function checkDocxData(path: string) {
-    const doc = await getXmlFromDocx(path);
-    const select = xpath.useNamespaces({ w: 'http://schemas.openxmlformats.org/wordprocessingml/2006/main' });
-    const tables = select('//w:tbl', doc);
-    const columns = select('//w:tblGrid/w:gridCol', doc);
-    const firstColCells = select('//w:tr/w:tc[1]//text()', doc);
-    const totalLength = select('//text()', doc).reduce((acc: number, cur) => acc + cur.toString().length, 0) as number;
-    const sourceLength = firstColCells.reduce((acc: number, cur) => acc + cur.toString().length, 0) as number;
-    const data = { columns: columns.length, tables: tables.length, sourceLength, totalLength };
-    return data;
+    const docx = new DocxFile(path);
+    await docx.read();
+    return await docx.getDocumentInfo();
 }
 
 export async function downloadFileFromLink(
@@ -91,6 +97,7 @@ export async function downloadFileFromLink(
 export const pathToFileItem = (path: string): FileItem => {
     const nameWithExtension = path.split(/[\\\/]/).pop();
     const lastDot = nameWithExtension.lastIndexOf('.');
+    if (lastDot === -1) return { path, name: nameWithExtension, extension: '' };
     const name = nameWithExtension.slice(0, lastDot);
     const extension = nameWithExtension.slice(lastDot + 1);
     return {

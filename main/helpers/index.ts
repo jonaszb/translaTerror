@@ -3,13 +3,11 @@ import { docxToMxliff, mxliffToDocx, requestForm, translateTable } from './apiUt
 import {
     findMatchingMxliff,
     handleFileOpen,
-    decompressDocx,
-    getXmlFromDocx,
     checkDocxData,
     downloadFileFromLink,
     pathToFileItem,
+    bookmarkAndFragmentDocx,
 } from './fileActions';
-import { bookmarkAndFragmentDocx } from './fragmentation';
 
 export {
     createWindow,
@@ -19,8 +17,6 @@ export {
     translateTable,
     findMatchingMxliff,
     handleFileOpen,
-    decompressDocx,
-    getXmlFromDocx,
     checkDocxData,
     downloadFileFromLink,
     bookmarkAndFragmentDocx,
