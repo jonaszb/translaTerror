@@ -1,8 +1,21 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 import { update } from './update';
-import { bookmarkAndFragmentDocx, checkDocxData, handleFileOpen, pathToFileItem } from './helpers';
+import {
+    bookmarkAndFragmentDocx,
+    checkDocxData,
+    docxToMxliff,
+    downloadFileFromLink,
+    findMatchingMxliff,
+    handleFileOpen,
+    mxliffToDocx,
+    pathToFileItem,
+    translateTable,
+} from './helpers';
+import { FileItem } from 'types';
+import { fragmentDocx } from './helpers/apiUtils';
+import { download } from 'electron-dl';
 
 // The built directory structure
 //
@@ -34,7 +47,6 @@ const openAccKeyWindow = async () => {
     accKeyWindow = new BrowserWindow({
         title: 'Enter Account Key',
         backgroundColor: '#000',
-        icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
         webPreferences: {
             preload,
             // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -43,17 +55,23 @@ const openAccKeyWindow = async () => {
             nodeIntegration: true,
             contextIsolation: false,
         },
+        width: 660,
+        maxWidth: 660,
+        minWidth: 660,
+        height: 280,
+        minHeight: 280,
+        maxHeight: 280,
     });
 
     if (url) {
         console.log('url', url);
         // electron-vite-vue#298
-        accKeyWindow.loadURL(url);
+        accKeyWindow.loadURL(url + 'account-key');
         // Open devTool if the app is not packaged
         accKeyWindow.webContents.openDevTools();
     } else {
         console.log('indexHtml', indexHtml);
-        accKeyWindow.loadFile(indexHtml);
+        accKeyWindow.loadFile(indexHtml + 'account-key');
     }
 };
 
@@ -161,6 +179,115 @@ ipcMain.handle('open-win', (_, arg) => {
     }
 });
 
+ipcMain.on('findMatchingMxliff', async (event, arg: { path: string; name: string; eventId: string }) => {
+    const { path, name, eventId } = arg;
+    const mxliffPath = await findMatchingMxliff(path, name);
+    return event.sender.send('matchingMxliffFound', { eventId, mxliffPath });
+});
+
+ipcMain.on('convertDocxToMxliff', async (event, arg: { path: string; mxliffData: FileItem; eventId: string }) => {
+    const { path, mxliffData, eventId } = arg;
+    const win = BrowserWindow.getFocusedWindow();
+    if (!win) return event.sender.send('docxToMxliff', { eventId, status: 1 });
+    const { data: downloadLink, status } = await docxToMxliff(path, mxliffData.path);
+    const downloadData =
+        status === 200 && typeof downloadLink === 'string'
+            ? await downloadFileFromLink(win, downloadLink, {
+                  directory: mxliffData.path.replace(`${mxliffData.name}.${mxliffData.extension}`, ''),
+                  filename: `${mxliffData.name}.mxliff`,
+              })
+            : null;
+    event.sender.send('docxToMxliff', { downloadData, eventId, status });
+});
+
+ipcMain.on(
+    'translateSingleDoc',
+    async (
+        event,
+        arg: { path: string; name: string; eventId: string; extension: string; fromLang: string; toLang: string }
+    ) => {
+        const { path, name, eventId, extension, fromLang, toLang } = arg;
+        const win = BrowserWindow.getFocusedWindow();
+        if (!win) return event.sender.send('translateSingleDoc', { eventId, status: 1 });
+        const { data: downloadLink, status } = await translateTable({ path, toLang, fromLang });
+        const downloadData =
+            status === 200 && typeof downloadLink === 'string'
+                ? await downloadFileFromLink(win, downloadLink, {
+                      directory: path.replace(`${name}.${extension}`, ''),
+                      filename: `${name}_TAB.${extension}`,
+                  })
+                : null;
+        event.sender.send('translateSingleDoc', { downloadData, eventId, status });
+    }
+);
+
+ipcMain.on(
+    'fragmentDocx',
+    async (event, arg: { path: string; name: string; eventId: string; fromLang?: string; toLang?: string }) => {
+        const { path, name, eventId, fromLang, toLang } = arg;
+        const win = BrowserWindow.getFocusedWindow();
+        if (!win) return event.sender.send('fragmentDocx', { eventId, status: 1 });
+        const { data: response, status } = await fragmentDocx(path, fromLang, toLang);
+        if (isFragmentationResponse(response)) {
+            const { url: downloadLink, ...fragData } = response;
+            const downloadData =
+                status === 200 && typeof downloadLink === 'string'
+                    ? await downloadFileFromLink(win, downloadLink, {
+                          directory: path.replace(`${name}.docx`, ''),
+                          filename: `${name}_TAB.docx`,
+                      })
+                    : null;
+            event.sender.send('fragmentDocx', {
+                downloadData,
+                fragData: {
+                    redundancy: fragData.redundancy,
+                    redundancyRatio: fragData.redundancy_ratio,
+                    totalLength: fragData.total_length,
+                },
+                eventId,
+                status,
+            });
+        } else {
+            event.sender.send('fragmentDocx', { downloadData: null, eventId, status });
+        }
+    }
+);
+
+ipcMain.on('convertMxliffToDocx', async (event, arg: { path: string; name: string; eventId: string }) => {
+    const { path, name, eventId } = arg;
+    const win = BrowserWindow.getFocusedWindow();
+    if (!win) return event.sender.send('mxliffToDocx', { eventId, status: 1 });
+    const { data: downloadLink, status } = await mxliffToDocx(path);
+    const downloadData =
+        status === 200 && typeof downloadLink === 'string'
+            ? await downloadFileFromLink(win, downloadLink, {
+                  directory: path.replace(`${name}.mxliff`, ''),
+                  filename: `${name}_TAB.docx`,
+              })
+            : null;
+    event.sender.send('mxliffToDocx', { downloadData, eventId, status });
+});
+
+ipcMain.on(
+    'openDownloadLink',
+    async (event, { downloadLink, file, suffix }: { downloadLink: any; file: FileItem; suffix?: string }) => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (!win) return console.error('No focused window');
+        await download(win, downloadLink, {
+            saveAs: true,
+            directory: file.path.replace(`${file.name}.${file.extension}`, ''),
+            filename: `${file.name}${suffix ?? ''}.${file.extension}`,
+        });
+    }
+);
+
+ipcMain.on('selectFile', async (event, arg) => {
+    const { eventId, extensions, multiselect } = arg;
+    const win = BrowserWindow.getFocusedWindow();
+    if (!win) return event.sender.send('selectFile', { eventId, status: 1 });
+    const filePaths = await handleFileOpen(win, { extensions, multiselect });
+    event.sender.send('selectFile', { filePaths, eventId });
+});
 ipcMain.on('addFiles', (event, arg) => {
     handleFileOpen(win!, { multiselect: true, extensions: ['docx', 'mxliff'] }).then((filePaths) => {
         event.sender.send('addFiles', filePaths);
@@ -212,3 +339,43 @@ ipcMain.on('closeAccKeyWindow', async (event, arg) => {
 ipcMain.on('openAccKeyWindow', async (event, arg) => {
     openAccKeyWindow();
 });
+
+const template: Electron.MenuItemConstructorOptions[] = [
+    {
+        label: app.name,
+        submenu: [
+            {
+                label: 'Account key',
+                click: openAccKeyWindow,
+            },
+            { type: 'separator' },
+            {
+                label: 'Quit',
+                accelerator: 'Command+Q',
+                click: function () {
+                    app.quit();
+                },
+            },
+        ],
+    },
+    {
+        label: 'Edit',
+        submenu: [
+            { label: 'Undo', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
+            { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
+            { label: 'Cut', accelerator: 'CmdOrCtrl+X', role: 'cut' },
+            { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
+            { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
+            { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectAll' },
+        ],
+    },
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
+
+const isFragmentationResponse = (
+    arg: any
+): arg is { url: string; redundancy: number; redundancy_ratio: number; total_length: number } => {
+    return arg && typeof arg === 'object' && 'url' in arg && 'redundancy' in arg && 'redundancy_ratio' in arg;
+};
