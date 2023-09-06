@@ -5,17 +5,21 @@ import './samples/node-api';
 import './index.css';
 import FilesContextProvider from './store/FilesContext';
 import { ToastProvider } from './store/ToastContext';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Route, Switch, HashRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ToastProvider>
         <FilesContextProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" Component={Home} />
-                    <Route path="/account-key" Component={AccountKey} />
-                </Routes>
-            </BrowserRouter>
+            <HashRouter>
+                <Switch>
+                    <Route exact path="/">
+                        <Home />
+                    </Route>
+                    <Route>
+                        <AccountKey />
+                    </Route>
+                </Switch>
+            </HashRouter>
         </FilesContextProvider>
     </ToastProvider>
 );

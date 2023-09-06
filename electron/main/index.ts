@@ -44,9 +44,14 @@ const openAccKeyWindow = async () => {
             accKeyWindow = null;
         }
     }
+    const mainWindow = BrowserWindow.getFocusedWindow();
+    if (!mainWindow) return;
+
     accKeyWindow = new BrowserWindow({
         title: 'Enter Account Key',
         backgroundColor: '#000',
+        modal: true,
+        parent: mainWindow,
         webPreferences: {
             preload,
             // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -64,14 +69,9 @@ const openAccKeyWindow = async () => {
     });
 
     if (url) {
-        console.log('url', url);
-        // electron-vite-vue#298
-        accKeyWindow.loadURL(url + 'account-key');
-        // Open devTool if the app is not packaged
-        accKeyWindow.webContents.openDevTools();
+        accKeyWindow.loadURL(url + '#account-key');
     } else {
-        console.log('indexHtml', indexHtml);
-        accKeyWindow.loadFile(indexHtml + 'account-key');
+        accKeyWindow.loadFile(indexHtml, { hash: 'account-key' });
     }
 };
 
@@ -96,7 +96,6 @@ let win: BrowserWindow | null = null;
 const preload = join(__dirname, '../preload/index.js');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
-
 async function createWindow() {
     win = new BrowserWindow({
         title: 'Main window',
@@ -119,7 +118,6 @@ async function createWindow() {
         // Open devTool if the app is not packaged
         win.webContents.openDevTools();
     } else {
-        console.log('indexHtml', indexHtml);
         win.loadFile(indexHtml);
     }
 
