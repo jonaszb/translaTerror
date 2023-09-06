@@ -16,7 +16,8 @@ import {
 import { FileItem } from 'types';
 import { fragmentDocx } from './helpers/apiUtils';
 import { download } from 'electron-dl';
-
+import updateApp from 'update-electron-app';
+updateApp();
 // The built directory structure
 //
 // ├─┬ dist-electron
