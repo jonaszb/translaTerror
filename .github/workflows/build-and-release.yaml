@@ -1,0 +1,45 @@
+name: Electron App Release Workflow
+
+on:
+    pull_request:
+        branches:
+            - main
+        branches_target:
+            - rc
+        paths-ignore:
+            - '**.md'
+        types:
+            - opened
+            - synchronize
+            - reopened
+
+jobs:
+    build-and-release:
+        strategy:
+            matrix:
+                os: [macos-latest, windows-latest]
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '16'
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: Build the app
+              run: yarn build
+
+            - name: Make the app
+              run: yarn make
+
+            - name: Publish the app
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: yarn run publish
