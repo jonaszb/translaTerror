@@ -288,9 +288,13 @@ ipcMain.on('selectFile', async (event, arg) => {
     event.sender.send('selectFile', { filePaths, eventId });
 });
 ipcMain.on('addFiles', (event, arg) => {
-    handleFileOpen(win!, { multiselect: true, extensions: ['docx', 'mxliff'] }).then((filePaths) => {
-        event.sender.send('addFiles', filePaths);
-    });
+    if (process.env.TEST_FILE_PATH) {
+        event.sender.send('addFiles', [process.env.TEST_FILE_PATH]);
+    } else {
+        handleFileOpen(win!, { multiselect: true, extensions: ['docx', 'mxliff'] }).then((filePaths) => {
+            event.sender.send('addFiles', filePaths);
+        });
+    }
 });
 
 ipcMain.on('checkDocxData', async (event, arg) => {

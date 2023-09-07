@@ -7,7 +7,7 @@
         "type": "git",
         "url": "https://github.com/jonaszb/translaterror.git"
     },
-    "description": "Electron Vite React boilerplate.",
+    "description": "Translation utilities for docx files",
     "author": "Jonasz Bilinski",
     "license": "MIT",
     "private": true,
