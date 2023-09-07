@@ -12,6 +12,10 @@ jobs:
         container:
             image: mcr.microsoft.com/playwright:v1.37.0-jammy
 
+        env:
+            DEBUG: pw:browser*
+            NODE_ENV: development
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
