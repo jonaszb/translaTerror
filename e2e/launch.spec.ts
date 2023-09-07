@@ -5,7 +5,10 @@ test.describe.serial('App launch', () => {
     let page: Page;
     test.beforeAll(async () => {
         const testFilePath = `${__dirname}/test-data/frag.docx`;
-        app = await electron.launch({ args: ['.', '--no-sandbox'], env: { TEST_FILE_PATH: testFilePath } });
+        app = await electron.launch({
+            args: ['.', '--no-sandbox'],
+            env: { ...process.env, TEST_FILE_PATH: testFilePath },
+        });
         page = await app.firstWindow();
     });
     test.afterAll(async () => {

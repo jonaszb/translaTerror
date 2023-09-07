@@ -6,7 +6,10 @@ test.describe.serial('Docx tile', () => {
     let tile: Locator;
     test.beforeAll(async () => {
         const testFilePath = `${__dirname}/test-data/macbeth.docx`;
-        app = await electron.launch({ args: ['.', '--no-sandbox'], env: { TEST_FILE_PATH: testFilePath } });
+        app = await electron.launch({
+            args: ['.', '--no-sandbox'],
+            env: { ...process.env, TEST_FILE_PATH: testFilePath },
+        });
         page = await app.firstWindow();
         await page.locator('body').click(); // Triggers file selection
         tile = page.getByTestId('file-tile');
