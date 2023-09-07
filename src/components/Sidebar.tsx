@@ -42,14 +42,14 @@ const Sidebar = () => {
         <section
             data-testid="sidebar"
             className={`relative flex w-20 flex-col items-center bg-gradient-to-b from-zinc-700 to-zinc-800 transition-all ease-out ${
-                files && files.length > 0 ? 'translate-x-0 border-r-2 border-zinc-600' : '-translate-x-20'
+                files && files.length > 0 ? 'translate-x-0 border-r-2 border-zinc-600 flex' : '-translate-x-20'
             }`}
         >
-            {files && (
+            {files && files.length > 0 && (
                 <>
                     <LogoRound className="my-6 h-14 w-14 rounded-full shadow" />
                     <div className="flex flex-col items-center gap-4 text-amber-50">
-                        <MenuButton danger={true} onClick={clearFiles} name="Remove all">
+                        <MenuButton danger={true} onClick={clearFiles} name="Remove all" aria-label="Remove all">
                             <BinIcon />
                         </MenuButton>
                         <MenuButton
@@ -57,6 +57,7 @@ const Sidebar = () => {
                                 if (ipcRenderer) ipcRenderer.send('addFiles');
                             }}
                             name="Add files"
+                            aria-label="Add files"
                         >
                             <PlusIcon />
                         </MenuButton>

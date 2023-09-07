@@ -27,6 +27,7 @@ const LanguageSelect: FC<{
                     data-tooltip-id={`${file.name}-${props.label}`}
                     data-tooltip-content={`${props.label} language`}
                     data-tooltip-delay-show={1000}
+                    aria-disabled={props.disabled}
                     className="h-10 w-20 cursor-pointer rounded-full bg-transparent bg-zinc-700 text-sm font-bold tracking-widest text-amber-50 outline-0 hover:brightness-110"
                 >
                     {selectedOption?.label}
@@ -72,6 +73,7 @@ const LangSelect: FC<React.ComponentProps<'div'> & { disabled?: boolean; noLabel
                     value={fromLang}
                     options={['auto', 'no', 'da', 'sv', 'pl', 'en']}
                     onChange={(value) => setFromLang(value)}
+                    disabled={disabled}
                 />
                 <RightArrowIcon className="text-zinc-600" />
                 <LanguageSelect
@@ -79,6 +81,7 @@ const LangSelect: FC<React.ComponentProps<'div'> & { disabled?: boolean; noLabel
                     value={toLang}
                     options={['no', 'da', 'sv', 'pl', 'en']}
                     onChange={(value) => setToLang(value)}
+                    disabled={disabled}
                 />
             </div>
         </div>

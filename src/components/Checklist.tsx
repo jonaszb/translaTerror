@@ -38,12 +38,19 @@ const Checklist: FC<
         <div {...props}>
             <div className="relative">
                 <SectionLabel>Requirements</SectionLabel>
-                <ul className="flex max-h-[82px] w-full flex-col flex-wrap rounded border border-zinc-700 px-3 py-2 shadow-inner">
+                <ul
+                    data-testid="requirement-list"
+                    className="flex max-h-[82px] w-full flex-col flex-wrap rounded border border-zinc-700 px-3 py-2 shadow-inner"
+                >
                     {conditions.map((condition, i) => (
                         <Condition key={i} {...condition} isEvaluating={isEvaluatingConditions} />
                     ))}
                 </ul>
-                <button className="absolute right-1 top-0.5 text-zinc-400" onClick={evaluateConditions}>
+                <button
+                    className="absolute right-1 top-0.5 text-zinc-400"
+                    onClick={evaluateConditions}
+                    aria-label="Check conditions"
+                >
                     <RefreshIcon className={`h-4 w-4 ${isEvaluatingConditions ? 'animate-spin' : ''}`} />
                 </button>
             </div>

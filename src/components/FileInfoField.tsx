@@ -7,7 +7,7 @@ const FileInfo: FC<{ label: string; value: string; currency?: string; annotation
     annotation,
 }) => {
     return (
-        <div className="flex w-1/2 flex-col font-source-sans">
+        <div className="flex w-1/2 flex-col font-source-sans" data-testid={label.toLowerCase().replace(' ', '-')}>
             <span className="whitespace-nowrap text-xs text-zinc-300">{label}</span>
             <div className=" flex h-[36px] text-zinc-400">
                 {currency && <span className="mr-px mt-[3px]">{currency}</span>}
