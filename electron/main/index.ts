@@ -16,7 +16,6 @@ import {
 import { FileItem } from 'types';
 import { fragmentDocx } from './helpers/apiUtils';
 import { download } from 'electron-dl';
-if (require('electron-squirrel-startup')) app.quit();
 import updateApp from 'update-electron-app';
 updateApp();
 // The built directory structure
