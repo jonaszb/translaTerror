@@ -1,0 +1,67 @@
+name: Electron App Test & Release Workflow
+
+on:
+    push:
+        branches:
+            - rc
+    pull_request:
+        branches:
+            - main
+        branches_target:
+            - rc
+        paths-ignore:
+            - '**.md'
+        types:
+            - opened
+            - synchronize
+            - reopened
+
+jobs:
+    e2e-tests:
+        runs-on: ubuntu-latest
+
+        container:
+            image: mcr.microsoft.com/playwright:v1.37.0-jammy
+
+        env:
+            NODE_ENV: development
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: Run e2e tests
+              run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn e2e
+
+    build-and-release:
+        needs: e2e-tests
+        strategy:
+            matrix:
+                os: [macos-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '16'
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: Build the app
+              run: yarn build
+
+            - name: Make the app
+              run: yarn make
+
+            - name: Publish the app
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+              run: yarn run publish

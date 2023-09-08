@@ -15,6 +15,7 @@ export type DocxData = {
 export type EventDataWithLink = {
     eventId: string;
     status: number;
+    message?: string;
     downloadData: {
         downloaded: boolean;
         url: string;
@@ -26,6 +27,7 @@ export type EventDataWithLink = {
 export type EventDataWithFiles = {
     eventId: string;
     status: number;
+    message?: string;
     files: FileItem[];
     fragData?: {
         redundancy: number;
