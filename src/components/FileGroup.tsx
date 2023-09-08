@@ -52,16 +52,16 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
             <div className="mb-8 flex items-center">
                 <div className="h-px w-8 shrink-0 bg-zinc-700" />
                 {extension === 'docx' && <MsWordIcon className={extensionIconStyle} />}
-                {/* {extension === 'mxliff' && (
-                    <Image
-                        src="/images/Phrase.png"
+                {extension === 'mxliff' && (
+                    <img
+                        src="Phrase.png"
                         width={48}
                         height={48}
                         alt="Phrase icon"
                         className={extensionIconStyle}
                         data-testid="phrase-icon"
                     />
-                )} */}
+                )}
                 <div className="relative h-px w-full bg-zinc-700">
                     <div className="absolute bottom-1 left-0 flex gap-4 text-xs font-bold text-zinc-700">
                         <GroupActionButton data-testid="select-all" onClick={handleSelectAll}>
