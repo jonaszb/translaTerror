@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { FileItem } from '../../types';
 import FileTile from './FileTile';
-import { MsWordIcon } from '../icons/icons';
+import { AudioIcon, MsWordIcon } from '../icons/icons';
 import { useFilesContext } from '../store/FilesContext';
 
 const GroupActionButton: FC<React.ComponentProps<'button'> & { border?: boolean }> = (props) => {
@@ -18,7 +18,7 @@ const GroupActionButton: FC<React.ComponentProps<'button'> & { border?: boolean 
     );
 };
 
-const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ extension, files }) => {
+const FileGroup: FC<{ extension: 'docx' | 'mxliff' | 'mp3'; files: FileItem[] }> = ({ extension, files }) => {
     const ctx = useFilesContext();
     const extensionIconStyle = 'mx-3 h-12 w-12 shrink-0 translate-y-1';
 
@@ -62,6 +62,7 @@ const FileGroup: FC<{ extension: 'docx' | 'mxliff'; files: FileItem[] }> = ({ ex
                         data-testid="phrase-icon"
                     />
                 )}
+                {extension === 'mp3' && <AudioIcon className={extensionIconStyle} />}
                 <div className="relative h-px w-full bg-zinc-700">
                     <div className="absolute bottom-1 left-0 flex gap-4 text-xs font-bold text-zinc-700">
                         <GroupActionButton data-testid="select-all" onClick={handleSelectAll}>

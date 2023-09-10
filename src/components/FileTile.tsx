@@ -8,6 +8,8 @@ import SingleFileContextProvider from '../store/SingleFileContext';
 import DocxContextProvider from '../store/DocxContext';
 import MxliffContextProvider from '../store/MxliffContext';
 import MxliffTileContent from './mxliff/mxliffTileContent';
+import AudioContextProvider from '@/store/AudioContext';
+import AudioTileContent from './audio/audioTileContent';
 
 const FileTile: FC<{ file: FileItem }> = ({ file }) => {
     const { setFiles } = useFilesContext();
@@ -58,6 +60,11 @@ const FileTile: FC<{ file: FileItem }> = ({ file }) => {
                         <MxliffContextProvider>
                             <MxliffTileContent />
                         </MxliffContextProvider>
+                    )}
+                    {file.extension === 'mp3' && (
+                        <AudioContextProvider>
+                            <AudioTileContent />
+                        </AudioContextProvider>
                     )}
                 </SingleFileContextProvider>
             </div>
