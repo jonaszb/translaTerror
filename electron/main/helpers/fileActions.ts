@@ -3,6 +3,7 @@ import fs from 'fs';
 import { download } from 'electron-dl';
 import { FileItem } from '../../../types';
 import DocxFile from '../models/DocxFile';
+import { parseBuffer } from 'music-metadata';
 
 export const findMatchingMxliff = async (path: string, name: string) => {
     const dir = path.replace(`${name}.docx`, '');
@@ -79,6 +80,17 @@ export async function checkDocxData(path: string) {
     const docx = new DocxFile(path);
     await docx.read();
     return await docx.getDocumentInfo();
+}
+
+export async function checkAudioDuration(path: string) {
+    try {
+        const buffer = fs.readFileSync(path);
+        const metadata = await parseBuffer(buffer);
+        return metadata.format.duration ? Math.floor(metadata.format.duration) : -1;
+    } catch (error) {
+        console.error('Error reading file:', error);
+        return -1;
+    }
 }
 
 export async function downloadFileFromLink(

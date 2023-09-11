@@ -4,6 +4,7 @@ import { GoogleAuth } from 'google-auth-library';
 import Store from 'electron-store';
 import { BrowserWindow, ipcMain, safeStorage } from 'electron';
 import DocxFile from '../models/DocxFile';
+import { pathToFileItem } from './fileActions';
 
 const keyStore = new Store({ name: 'service-key' });
 let key: any;
@@ -13,6 +14,7 @@ const keyCheckUrl = 'https://europe-central2-translaterror.cloudfunctions.net/ch
 const translafeFnUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-translate';
 const mxliffConvertUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-mxliff-single';
 const fragmentDocxUrl = 'https://europe-central2-translaterror.cloudfunctions.net/docx-fragment';
+const transcribeUrl = 'https://europe-central2-translaterror.cloudfunctions.net/transcribe';
 
 const initialize = () => {
     console.log('Initializing key');
@@ -139,6 +141,19 @@ export const fragmentDocx = async (path: string, fromLang?: string, toLang?: str
         toLang && formData.append('target_language', toLang);
         fromLang && fromLang !== 'auto' && formData.append('source_language', fromLang);
         response = await requestForm({ formData, url: fragmentDocxUrl });
+    } catch {
+        response = { data: null, status: 1 };
+    }
+    return response;
+};
+
+export const transcribe = async (path: string) => {
+    const formData = new FormData();
+    const fileItem = pathToFileItem(path);
+    let response: { data: unknown; status: number };
+    try {
+        formData.append('file', fs.readFileSync(path), fileItem.name + '.' + fileItem.extension);
+        response = await requestForm({ formData, url: transcribeUrl });
     } catch {
         response = { data: null, status: 1 };
     }

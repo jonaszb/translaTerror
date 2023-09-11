@@ -1,9 +1,6 @@
 name: Electron App Test & Release Workflow
 
 on:
-    push:
-        branches:
-            - rc
     pull_request:
         branches:
             - main
