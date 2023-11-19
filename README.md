@@ -3,6 +3,7 @@
 TranslaTerror is an Electron utility app designed specifically for translators. It provides a range of features to streamline the translation process.
 
 ## Features
+![frag](https://github.com/jonaszb/translaTerror/assets/44910820/80a509cd-fd29-40e6-923d-bfffc5f0d632)
 
 -   Divide docx files into fragments and remove redundancy
 -   Translate docx files
@@ -13,7 +14,7 @@ TranslaTerror is an Electron utility app designed specifically for translators. 
 
 To install TranslaTerror, please follow these steps:
 
-1. Visit the [releases](https://github.com/username/repository/releases) page of the GitHub repository.
+1. Visit the [releases](https://github.com/jonaszb/translaTerror/releases) page of the GitHub repository.
 2. Download the latest version of TranslaTerror for your operating system (Windows or MacOS).
 3. Run the downloaded installer to install TranslaTerror on your system.
 
@@ -40,20 +41,12 @@ If you prefer to run a local development version of TranslaTerror, you can follo
     ```
     This will install the necessary dependencies and start the development version of TranslaTerror.
 
-Please note that depending on your operating system settings, TranslaTerror might require superuser permissions to access requested files. If you are not running as a superuser, please ensure that the files you want to work with are located in a publicly accessible folder.
+Please note that depending on your operating system settings, TranslaTerror might require superuser permissions to access requested files. If TranslaTerror is not running as a superuser, please ensure that the files you want to work with are located in a publicly accessible folder.
 
 ## Contributing
 
-Contributions to TranslaTerror are welcome! If you would like to contribute to the project, please follow the guidelines outlined in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+Contributions to TranslaTerror are welcome! If you would like to contribute to the project, please fork the repository and submit a pull request.
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgements
-
-We would like to express our gratitude to the developers and contributors of the open-source libraries and tools used in this project. Thank you for your valuable contributions.
-
-## Contact
-
-If you have any questions or suggestions, please feel free to reach out to us at [email@example.com](mailto:email@example.com). We would love to hear from you!
