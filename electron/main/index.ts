@@ -14,9 +14,10 @@ import {
     translateTable,
 } from './helpers';
 import { FileItem } from 'types';
-import { fragmentDocx } from './helpers/apiUtils';
+import { fragmentDocx, transcribe } from './helpers/apiUtils';
 import { download } from 'electron-dl';
 import updateApp from 'update-electron-app';
+import { checkAudioDuration } from './helpers/fileActions';
 updateApp();
 // The built directory structure
 //
@@ -291,7 +292,7 @@ ipcMain.on('addFiles', (event, arg) => {
     if (process.env.TEST_FILE_PATH) {
         event.sender.send('addFiles', [process.env.TEST_FILE_PATH]);
     } else {
-        handleFileOpen(win!, { multiselect: true, extensions: ['docx', 'mxliff'] }).then((filePaths) => {
+        handleFileOpen(win!, { multiselect: true, extensions: ['docx', 'mxliff', 'mp3'] }).then((filePaths) => {
             event.sender.send('addFiles', filePaths);
         });
     }
@@ -301,6 +302,37 @@ ipcMain.on('checkDocxData', async (event, arg) => {
     const { path, eventId } = arg;
     const data = await checkDocxData(path);
     event.sender.send('checkDocxData', { data, eventId });
+});
+
+ipcMain.on('checkAudioDuration', async (event, arg) => {
+    const { path, eventId } = arg;
+    const duration = await checkAudioDuration(path);
+    event.sender.send('checkAudioDuration', { duration, eventId });
+});
+
+ipcMain.on('transcribe', async (event, arg) => {
+    const { path, eventId } = arg;
+    const win = BrowserWindow.getFocusedWindow();
+    const fileItem = pathToFileItem(path);
+    if (!win) return event.sender.send('transcribe', { eventId, status: 1 });
+    const { data: response, status } = await transcribe(path);
+    if (typeof response === 'string') {
+        const downloadLink = response;
+        const downloadData =
+            status === 200 && typeof downloadLink === 'string'
+                ? await downloadFileFromLink(win, downloadLink, {
+                      directory: path.replace(`${fileItem.name}.${fileItem.extension}`, ''),
+                      filename: `${fileItem.name}_TR.docx`,
+                  })
+                : null;
+        event.sender.send('transcribe', {
+            downloadData,
+            eventId,
+            status,
+        });
+    } else {
+        event.sender.send('transcribe', { downloadData: null, eventId, status });
+    }
 });
 
 ipcMain.on('bookmarkAndFragmentDocx', async (event, arg) => {
@@ -381,4 +413,8 @@ const isFragmentationResponse = (
     arg: any
 ): arg is { url: string; redundancy: number; redundancy_ratio: number; total_length: number } => {
     return arg && typeof arg === 'object' && 'url' in arg && 'redundancy' in arg && 'redundancy_ratio' in arg;
+};
+
+const isResponseWithDlLink = (arg: any): arg is { url: string } => {
+    return arg && typeof arg === 'object' && 'url' in arg;
 };

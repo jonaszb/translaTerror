@@ -10,7 +10,7 @@ import { AccKeyProvider } from './store/AccKeyContext';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
-const supportedExtensions = ['docx', 'mxliff'];
+const supportedExtensions = ['docx', 'mxliff', 'mp3'];
 
 function Home() {
     const { files, setFiles, filesByExtension } = useFilesContext();
@@ -60,6 +60,9 @@ function Home() {
                         )}
                         {files && files.length > 0 && filesByExtension!.mxliff && (
                             <FileGroup extension="mxliff" files={filesByExtension!.mxliff} />
+                        )}
+                        {files && files.length > 0 && filesByExtension!.mp3 && (
+                            <FileGroup extension="mp3" files={filesByExtension!.mp3} />
                         )}
 
                         {(!files || files.length === 0) && <NoFilesScreen />}

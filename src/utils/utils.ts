@@ -12,3 +12,26 @@ export const pathToFileItem = (path: string): FileItem => {
         extension,
     };
 };
+
+export const formatTime = (seconds: number) => {
+    if (seconds < 0 || seconds > 86400) {
+        return 'N/A';
+    }
+
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+    const minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+
+    const parts: string[] = [];
+    if (hours) {
+        parts.push(String(hours).padStart(2, '0'));
+    }
+    if (minutes || hours) {
+        parts.push(String(minutes).padStart(2, '0'));
+    }
+    parts.push(String(seconds).padStart(2, '0'));
+
+    if (parts.length === 1) return parts[0] + 's';
+    return parts.join(':');
+};
